@@ -13,8 +13,8 @@ The Virtual Xperience project aims to create a virtual event platform that facil
 
 ## Repository Structure
 The repository is organized into the following folders:
-- **/project_definition:** Project definition documents and related materials.
-- **/diagrams:** UML diagrams and other visual representations of the project architecture.
-- **/paper:** Research paper and related documents.
-- **/poster:** Poster presentation for the project.
--  **Personal folders:** where you can find the workshop developed at the beginning of the course
+- **Project_definition:** Project definition documents and related materials (PDF and README).
+- **Diagrams:** UML diagrams and other visual representations of the project architecture.
+- **Paper:** Research paper and related documents.
+- **Poster:** Poster presentation for the project.
+- **Personal folders:** where you can find the workshop developed at the beginning of the course
