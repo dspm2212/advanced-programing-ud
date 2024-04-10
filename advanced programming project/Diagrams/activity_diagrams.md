@@ -1,5 +1,5 @@
 
-## <div align="center">Activity diagrams </div>
+## <div align="center">Activity diagrams: </div>
 
 ---
    
