@@ -1,5 +1,8 @@
 
+## <div align="center">Activity diagrams </div>
 
+---
+   
 <p align="center">
 
 <img src= https://github.com/dspm2212/advanced-programing-ud/assets/151407920/f2743ce0-f6ca-44a0-a67b-bfc105824a9d>
