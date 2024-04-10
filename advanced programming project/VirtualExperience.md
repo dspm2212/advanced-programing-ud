@@ -60,43 +60,7 @@ To design the business model, we have to create an architecture that can manage 
 
 
 ## Conceptual Model 
-To build the conceptual model of the project, UML diagrams were used, which are related as follows:
-### Deployment Diagram 
-
-### Activity Diagram 
-
-- ![diagrmas de actividad-Página-1 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/ec1f85ec-67af-470d-8fa8-928d038f1c22)
-- ![diagrmas de actividad-Página-2 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/0d1cb25b-4fa4-4b7a-ae02-806910be2354)
-- ![diagrmas de actividad-Página-3 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7edc83b6-eb49-4458-9439-ba670d6762a3)
-- ![diagrmas de actividad-Página-4 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/d743ec0a-8577-47dc-9ec2-01bea3643ba9)
-- ![diagrmas de actividad-Página-5 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7c7166ef-f192-41bc-a762-c2ea45fc5c86)
-- ![diagrmas de actividad-Página-8 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/79501957-e857-4773-a953-7742ad97e16e)
-- ![diagrmas de actividad-Página-6 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/6719c07a-61eb-49f9-a1aa-97bbc0783d8a)
-- ![diagrmas de actividad-Página-7 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/a558d32b-c0cb-4f98-b951-a454b18a6bc0)
-- ![diagrmas de actividad-Página-9 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/e0989827-18d2-49af-8455-2f345735ba83)
-- ![diagrmas de actividad-Página-10 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7537cdd4-87fa-453d-a875-4c2077915f33)
-- ![diagrmas de actividad-Página-11 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/d2205b4d-dd44-4cdd-9301-b14d5b8a5950)
-- ![diagrmas de actividad-Página-12 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/64ccde38-0164-4d64-9174-66fc8148609a)
-- ![diagrmas de actividad-Página-13 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/b866928a-e244-4900-b201-b091e807ac14)
-- ![diagrmas de actividad-Página-14 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/8f326e8e-fa71-4758-98be-47799982e7ab)
-
-
-
-### Sequence Diagrams
-
-### State Diagrams 
-
-- ![diagrmas de actividad-estado  drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/e6e58cf3-86c3-48ff-a7b1-13c0f5592bb7)
-- ![estado 2 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/b330188f-c6b8-4c27-82e9-b0169f486dea)
-
-
-## CRC card and Class Diagram 
-
-### Class Driagram 
-
-![diagrama de clases drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/c4a6cfa6-6047-4017-b1ef-827b808e8d96)
-
-
+To build the conceptual model of the project, UML diagrams were use, depeloment digram, state diagram, activity diagrams, sequence diagrams 
 ## Test
 
 
