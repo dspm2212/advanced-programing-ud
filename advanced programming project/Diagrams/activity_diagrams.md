@@ -1,16 +1,83 @@
-# Activity Diagrams
 
-- ![diagrmas de actividad-Página-1 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/ec1f85ec-67af-470d-8fa8-928d038f1c22)
-- ![diagrmas de actividad-Página-2 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/0d1cb25b-4fa4-4b7a-ae02-806910be2354)
-- ![diagrmas de actividad-Página-3 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7edc83b6-eb49-4458-9439-ba670d6762a3)
-- ![diagrmas de actividad-Página-4 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/d743ec0a-8577-47dc-9ec2-01bea3643ba9)
-- ![diagrmas de actividad-Página-5 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7c7166ef-f192-41bc-a762-c2ea45fc5c86)
-- ![diagrmas de actividad-Página-8 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/79501957-e857-4773-a953-7742ad97e16e)
-- ![diagrmas de actividad-Página-6 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/6719c07a-61eb-49f9-a1aa-97bbc0783d8a)
-- ![diagrmas de actividad-Página-7 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/a558d32b-c0cb-4f98-b951-a454b18a6bc0)
-- ![diagrmas de actividad-Página-9 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/e0989827-18d2-49af-8455-2f345735ba83)
-- ![diagrmas de actividad-Página-10 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7537cdd4-87fa-453d-a875-4c2077915f33)
-- ![diagrmas de actividad-Página-11 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/d2205b4d-dd44-4cdd-9301-b14d5b8a5950)
-- ![diagrmas de actividad-Página-12 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/64ccde38-0164-4d64-9174-66fc8148609a)
-- ![diagrmas de actividad-Página-13 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/b866928a-e244-4900-b201-b091e807ac14)
-- ![diagrmas de actividad-Página-14 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/8f326e8e-fa71-4758-98be-47799982e7ab)
+
+<p align="center">
+
+<img src= https://github.com/dspm2212/advanced-programing-ud/assets/151407920/f2743ce0-f6ca-44a0-a67b-bfc105824a9d>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/4098dacc-50b5-4065-a7a1-0c7fe55fa8f9>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/1a4b2361-9a0b-46c8-95cd-78c10282915e>
+</p>
+
+---
+
+<p align="center">
+<img src=(https://github.com/dspm2212/advanced-programing-ud/assets/151407920/1f9c3b86-37a4-4bd1-a01b-082a434bd908>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/06da6612-e01d-4cdf-97e5-2281765be516>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/d952d55d-e1ad-4a20-a193-9264409e7d17>
+</p>
+
+---
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/dc585703-5189-4bb4-b9a5-aa740e23a476>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/4effd48b-18b8-4335-b0d2-f2a3f324fbc5>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/f3f70891-c270-40dc-8853-e93164050636>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/1ae2d653-96f5-45b7-bae0-28f217fc3770>
+</p>
+
+---
+
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/61f526d3-1014-46db-81da-63ba603f3a6f>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/0b43a5b5-f41f-4043-9aac-88eb9be7f054>
+</p>
+
+---
+
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/577ef840-7994-4df6-a72c-fc19abb22f4f>
+</p>
+
+---
+<p align="center">
+<img src=https://github.com/dspm2212/advanced-programing-ud/assets/151407920/56e52970-e536-45de-ab8f-f2dd5382c987>
+</p>
