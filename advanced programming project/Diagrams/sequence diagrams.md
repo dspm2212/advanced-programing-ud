@@ -1,7 +1,7 @@
- 
+   ## Sequence Diagrams: 
 <p align="center">
 
-  ## Sequence Diagrams: 
+
   
  <img src = https://github.com/dspm2212/advanced-programing-ud/assets/151407920/26d8191b-50c3-4ca3-a099-8d59fa6a57d3>
 
