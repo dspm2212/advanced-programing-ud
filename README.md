@@ -65,6 +65,12 @@ To build the conceptual model of the project, UML diagrams were used, which are 
 
 ### Activity Diagram 
 
+- ![diagrmas de actividad-Página-1 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/ec1f85ec-67af-470d-8fa8-928d038f1c22)
+- ![diagrmas de actividad-Página-2 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/0d1cb25b-4fa4-4b7a-ae02-806910be2354)
+- ![diagrmas de actividad-Página-3 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/7edc83b6-eb49-4458-9439-ba670d6762a3)
+- ![diagrmas de actividad-Página-4 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151273348/d743ec0a-8577-47dc-9ec2-01bea3643ba9)
+
+
 ### Sequence Diagrams
 
 ### State Diagrams 
