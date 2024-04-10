@@ -1,28 +1,3 @@
-# Virtual Xperience 
-# Proyect Advanced Programming 
-
-
-## Universidad Distrital Francisco Jose de Caldas 
-
-  ##Faculty of Systems Engineering   
-  ##Authors 
-    -Sergio Nicolas Mendivelso
-    -Daniel Santiago Perez 
-
-##Project introduction:
-
-virtual Xperience is a virtual event platform that helps the organization, management and the participation of these events. The users can register themselves so they can access the events they want. Also, they can create events with their own activities and assignments.
-
-The application has a calendar, so the user can watch their schedule and programmed events and activities.
-
-##Business model:
-
-The business model of the virtual event platforms it's based on creating new events where the organizer can add activities and assignments online. The users also can design these events.
-
-Some functions of the platforms are the following points:
-Create events: The organizer can design virtual events and activities, with date, hour, description, and type.
-Inscription management: The platform facilitate the inscription process for the participants, some product sales and e-mail confirmations.
-Real time interaction: The platform provides tools to interact with # <div align="center">Virtual Xperience</div>
 
 ## <div align="center">Advanced Programming Project</div>
 
