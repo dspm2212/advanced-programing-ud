@@ -17,4 +17,3 @@ The repository is organized into the following folders:
 - **Diagrams:** UML diagrams and other visual representations of the project architecture.
 - **Paper:** Research paper and related documents.
 - **Poster:** Poster presentation for the project.
-- **Personal folders:** where you can find the workshop developed at the beginning of the course
