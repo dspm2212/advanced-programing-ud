@@ -44,4 +44,33 @@ Monetization: The ways the platform acquires money are: ads, premium memberships
 
 To design the business model, we have to create an architecture that can manage a lot of events at time. Another important thing is the security of this project.
 
+## StakeHolders:
+
+- **Event organizers:** like business and people that want to do workshops.
+- **Participants:** People that want to participate in those workshops.
+- **Sponsors:** Companies that can finance some great events.
+- **Developers:** The people that can program this platform.
+
+
+## Tools:
+
+- **Programming languages :** Html, CSS,JS for frontend and Python for the backend
+- **FrameWorks:** Django, canvas.
+## User Stories: 
+
+
+## Conceptual Model 
+To build the conceptual model of the project, UML diagrams were used, which are related as follows:
+### Deployment Diagram 
+
+### Activity Diagram 
+
+### Sequence Diagrams
+
+### State Diagrams 
+
+## CRC card and Class Diagram 
+
+## Test
+
 
