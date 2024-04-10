@@ -1,4 +1,4 @@
-   ## Sequence Diagrams: 
+  ## <div align="center">Sequence Diagrams:</div> 
 <p align="center">
 
 
