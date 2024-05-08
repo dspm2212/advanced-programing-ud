@@ -1,2 +1,1 @@
 from sqlalchemy import Column
-
