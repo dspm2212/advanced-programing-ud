@@ -19,6 +19,7 @@ class PostgresConnection:
         self, user: str, password: str, host: str, port: int, database_name: str
     ):
         self.engine = create_engine(
+            
             f"postgresql://{user}:{password}@{host}:{port}/{database_name}"
         )
         self.session = sessionmaker(bind=self.engine)
