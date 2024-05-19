@@ -12,6 +12,8 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 """
 
 from pydantic import BaseModel
+from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy.ext.declarative import declarative_base
 
 
 # ============================= PARCICIPANT CLASS =============================
@@ -20,7 +22,7 @@ class Participant(BaseModel):
 
     """This class is an abstractation for any participant into the application"""   
     _username: str
-    _id: str
+    _id: int
     _password: str
     _email: str
     _registered_events: list
@@ -53,4 +55,24 @@ class Participant(BaseModel):
        
         """ 
         return Participant(username = username, password = password, verified ={"publish": True})
+    
+class Organizer(Participant):
 
+    """This class is an abstractation for any organizer in the application"""
+
+    _organized_events:list
+
+
+Base = declarative_base()
+
+class UsersDB(Base):
+
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    email = Column(String)
+    password = Column(String)
+    registered_events = Column(String)
+    verified = Column(String)
+    uploaded_activities = Column(String)

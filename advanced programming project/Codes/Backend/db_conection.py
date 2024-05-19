@@ -22,4 +22,5 @@ class PostgresConnection:
             
             f"postgresql://{user}:{password}@{host}:{port}/{database_name}"
         )
+
         self.session = sessionmaker(bind=self.engine)
