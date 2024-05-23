@@ -1,0 +1,22 @@
+body{
+    background-color:rgba(157, 248, 218, 0.466); 
+
+}
+header{
+    text-align: center;
+}
+h3{
+    color:blueviolet;
+}
+table{
+    border-collapse: collapse;
+    width: 50%;
+    border: 2px solid black  ;
+}
+#btnLogin{
+    background-color: chartreuse;
+}
+.form_input{
+    border-radius: 10px ;
+    color:chocolate;
+}
