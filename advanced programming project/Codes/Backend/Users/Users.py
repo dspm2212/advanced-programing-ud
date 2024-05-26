@@ -37,7 +37,7 @@ class Participant(BaseModel):
         )
 
     @staticmethod
-     def register(username, email, password):
+    def register(username, email, password):
   
         """ This method is used to register a new Participant
 
