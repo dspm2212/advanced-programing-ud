@@ -17,10 +17,9 @@ class PostgresConnection:
 
     def __init__(
         self, user: str, password: str, host: str, port: int, database_name: str
-    ):
-        self.engine = create_engine(
-            
-            f"postgresql://{user}:{password}@{host}:{port}/{database_name}"
-        )
+    ):      
+            self.engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database_name}')
+            self.Session = sessionmaker(bind=self.engine)
 
-        self.session = sessionmaker(bind=self.engine)
+    def session(self):
+        return self.Session()

@@ -14,6 +14,7 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 from pydantic import BaseModel
 from sqlalchemy import Column, String, Integer, Boolean
 from sqlalchemy.ext.declarative import declarative_base
+from db_conection import PostgresConnection
 
 
 # ============================= PARCICIPANT CLASS =============================
@@ -29,8 +30,14 @@ class Participant(BaseModel):
     _verified: bool
     _uploaded_activities: list
 
+    
+    def __init__(self):
+        self.connection = PostgresConnection(
+            "ud_ap_user", "P4$$w0rd", "localhost", 5432, "ud_ad_project"
+        )
+
     @staticmethod
-    def register(username, email, password):
+     def register(username, email, password):
   
         """ This method is used to register a new Participant
 
@@ -56,6 +63,9 @@ class Participant(BaseModel):
         """ 
         return Participant(username = username, password = password, verified ={"publish": True})
     
+    def add_to_db(self):
+
+
 class Organizer(Participant):
 
     """This class is an abstractation for any organizer in the application"""

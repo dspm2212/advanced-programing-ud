@@ -1,6 +1,19 @@
 version: '3.3'
 
 services:
+  postgres:
+    image: postgres
+    restart: always
+    ports: 
+    - "5432:5432"
+    environment:
+
+    - DATABASE_HOST="127.0.0.1:5432"
+    - POSTGRES_USER=Daniel
+    - POSTGRES_PASSWORD=perez123
+    - POSTGRES_DB=Virtual_Xperience
+
+    volumes:
   ap-backend:
     build:
       context: .
