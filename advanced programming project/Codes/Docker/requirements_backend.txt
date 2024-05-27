@@ -5,3 +5,5 @@ pydantic
 pydantic-settings
 uvicorn
 postgres
+passlib
+bcrypt
