@@ -12,40 +12,57 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 #----------------------------------------------------------------
 
 from fastapi import FastAPI, HTTPException
-from Users.Users import User, UsersDB, connection
+from Users.Users import User, UsersDB, Base
 from db_conection import PostgresConnection
+
+
 
 
 #Starts the app
 
-user_online:User = None
 app = FastAPI()
 
 
 #==================================== METHODS =================================
 
 
-@app.get("/")
+
+"""
+ Simple test to verify that the database connection is working
+
+"""
+
+user_online:User = None
+
+
+# Create the tables in the database
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
+session = connection.Session()
+Base.metadata.create_all(bind=connection.engine)
+users_db = session.query(UsersDB).all()
+session.close()
+
+
+
+@app.get("/test")
 def test():
 
-
-    """
-    Simple test to verify that the database connection is working
-
-    """
-
-    session = connection.Session()
-    
-    users_db = session.query(UsersDB).all()
+    global user_online
 
     if not users_db:
         
         session.close()
         return "No hay usuarios"
 
+    elif user_online == None:
+
+     return "Hay usuarios " + str(len(users_db)) 
+
+
     else:
         session.close()
-        return "Hay usuarios " + str(len(users_db)) + " online user: " + user_online.username
+        return "Hay usuarios " + str(len(users_db))+ " online user: " + user_online.username
+
 
 
 
@@ -53,7 +70,7 @@ def test():
 
 
 @app.post("/register/")
-def register(username:str, email:str, password:str, password_confirmation:str) -> str:
+def register(username:str, email:str, password:str, password_confirmation:str) -> dict:
 
 
     """
@@ -65,12 +82,13 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
     steps:
 
-    -first create an session to de database
-    -if the email hasn't an '@' will be raise an HTTPException (400)
-    -if the username already exists it will be raise an HTTPException (400)
-    -if the email already exists it will be raise an HTTPException (400)
-    -if the username and the email doesn't exists the user is created and uploadoded to the database.
-    -finally, it closes the session
+    - first create an session to de database
+    - if the email hasn't an '@' will be raise an HTTPException (400)
+    - if the password confirmation doesn't match with the password it will be raise an HTTPException (400)
+    - if the username already exists it will be raise an HTTPException (400)
+    - if the email already exists it will be raise an HTTPException (400)
+    - if the username and the email doesn't exists the user is created and uploadoded to the database.
+    - finally, it closes the session
 
     Parameters:
     - username (str): The username of the new user.
@@ -126,12 +144,12 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
     finally:
             session.close()
 
-    return "User Registered Succesfully" 
+    return {"message":"User Registered Succesfully" }
 
 #--------------------------------------
 
 @app.post("/login/")
-def login(username:str, password:str) -> str:
+def login(username:str, password:str) -> dict:
     """
     
     main function:
@@ -140,12 +158,11 @@ def login(username:str, password:str) -> str:
 
     steps:
     
-    -first create an session to de database
-    -if the password confirmation doesn't match with the password it will be raise an HTTPException (400)
-    -if the username doesn't exists it will be raise an HTTPException (400)
-    -if the password doesn't match with the password in the database it will be raise an HTTPException (400)
-    -if the username and the password matchs the user is logged in.
-    -finally, it closes the session
+    - first create an session to de database
+    - if the username doesn't exists it will be raise an HTTPException (400)
+    - if the password doesn't match with the password in the database it will be raise an HTTPException (400)
+    - if the username and the password matchs the user is logged in and it values are copied in the user_online attribute
+    - finally, it closes the session
     
     Parameters:
     - username (str): The username of the new user.
@@ -158,8 +175,16 @@ def login(username:str, password:str) -> str:
     Returns:
     - str: "User Logged In Succesfully" if the user is logged in successfully.
 
+    Example:
+
+     ```
+     login("new_user", "password123")
+
+      ```
+
     """
     global user_online
+
     session = connection.Session()
     user_db = session.query(UsersDB).all() 
 
@@ -186,6 +211,8 @@ def login(username:str, password:str) -> str:
 
     finally:
         session.close()
+        return {"message":"Login successful"}
 
-    return "Login successful"
+
+
         
