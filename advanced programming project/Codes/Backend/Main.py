@@ -22,7 +22,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # ========================== DECLARATION =========================
 
-
 # Initialize the application
 app = FastAPI()
 
@@ -35,32 +34,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 #Starts the app
-
 app = FastAPI()
 app.include_router(router_dashboard)
 
-#==================================== METHODS =================================
-
-"""
- Simple test to verify that the database connection is working
-
-"""
-
+#Declare the actual online user
 user_online:User = None
 
+#Database connection
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
+# Create the tables in the database
 Base.metadata.create_all(bind=connection.engine, tables=[UsersDB.__table__])
 Base.metadata.create_all(bind=connection.engine, tables=[EventsDB.__table__])
 
-
-
+#==================================== SERVICES =================================
 
 @app.get("/test")
 def test():
+
+    """
+     Simple test to verify that the database connection is working
+
+    """
 
     global user_online
 
@@ -274,6 +270,7 @@ def search_user_by_id(user_id:str):
             "verified": user_exists.verified,
             "email": user_exists.email,
             "uploaded_activities": user_exists.uploaded_activities_id,
+            "participant_events": user_exists.participant_events_id,
             "organized_events": user_exists.organized_events_id
         }
     

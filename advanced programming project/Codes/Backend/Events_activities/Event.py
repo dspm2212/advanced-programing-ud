@@ -18,6 +18,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from db_conection import PostgresConnection
 
+#===================================== DECLARATION ====================================
+
+# Declarative base class
 Base = declarative_base()
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
@@ -42,7 +45,7 @@ class Event(BaseModel):
 
     def add_to_db(self):
             """
-                Main function:
+            Main function:
 
             - Add a new Event to the database.
 
