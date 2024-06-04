@@ -13,19 +13,36 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 
 from fastapi import FastAPI, HTTPException
 from Users.Users import User, UsersDB, Base
+from Events_activities.Event import EventsDB
 from db_conection import PostgresConnection
+from Hash_password import hash_password, verify_password
+from DashBoard_services import router_dashboard
+from fastapi.middleware.cors import CORSMiddleware
 
+
+# ========================== DECLARATION =========================
+
+
+# Initialize the application
+app = FastAPI()
+
+# Added CORS middleware to allow cross-origin requests, and don't create conflicts
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
 #Starts the app
 
 app = FastAPI()
-
+app.include_router(router_dashboard)
 
 #==================================== METHODS =================================
-
-
 
 """
  Simple test to verify that the database connection is working
@@ -34,13 +51,11 @@ app = FastAPI()
 
 user_online:User = None
 
-
-# Create the tables in the database
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
-session = connection.Session()
-Base.metadata.create_all(bind=connection.engine)
-users_db = session.query(UsersDB).all()
-session.close()
+
+Base.metadata.create_all(bind=connection.engine, tables=[UsersDB.__table__])
+Base.metadata.create_all(bind=connection.engine, tables=[EventsDB.__table__])
+
 
 
 
@@ -64,12 +79,10 @@ def test():
         return "Hay usuarios " + str(len(users_db))+ " online user: " + user_online.username
 
 
-
-
 #------------------------------------
 
 
-@app.post("/register/")
+@app.post("/register")
 def register(username:str, email:str, password:str, password_confirmation:str) -> dict:
 
 
@@ -132,9 +145,15 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
              raise HTTPException(status_code=400, detail="The email already exists")
 
         else: 
-            hashed_pass = User.hash_password(password=password)
-            new_id =  len(user_db) + 1
-            user = User(username=username, id = new_id ,password=hashed_pass, email=email)
+            hashed_pass = hash_password(password=password)
+            new_id =  "U"+ str (len(user_db) + 1)
+            user = User()
+
+            user.username=username 
+            user.id = new_id
+            user.password=hashed_pass 
+            user.email=email
+
             user.add_to_db()
 
     except Exception as e:
@@ -148,7 +167,7 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
 #--------------------------------------
 
-@app.post("/login/")
+@app.post("/login")
 def login(username:str, password:str) -> dict:
     """
     
@@ -197,7 +216,7 @@ def login(username:str, password:str) -> dict:
 
             raise HTTPException(status_code=400, detail= "Invalid username or password")
 
-        elif not User.verify_password(password, user_exists.password):
+        elif not verify_password(password, user_exists.password):
             raise HTTPException(status_code=400, detail="Invalid username or password")
 
         else: 
@@ -211,8 +230,51 @@ def login(username:str, password:str) -> dict:
 
     finally:
         session.close()
-        return {"message":"Login successful"}
+    return {"message":"Login successful"}
 
 
 
+@app.post("/search_user_by_id")
+def search_user_by_id(user_id:str):
+    """
+    Main function:
+    - Searches a user by id in the database.
+    Steps:
+    - Create a new session
+    - if the users id does not exist, will be raise an HTTPException (400)
+    - if the users id exists, will be return the user
+    - finally, it closes the session
+    Parameters:
+    - user_id (int): The id of the user.
+    Raises:
+    - HTTPException: If the user id doesn't exists.
+    
+    Returns:
+    - user info
+    Example:
+    
+    ```
+    search_user_by_id(U30)
+     ```
+
+    """
+    session = connection.Session()
+    user_db = session.query(UsersDB).all() 
+    try:
+        user_exists = session.query(UsersDB).filter(UsersDB.id == user_id).first()
+        if not user_exists:
+            raise HTTPException(status_code=400, detail= "Invalid user id")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    finally:
+        session.close()
+    return {
+                "username": user_exists.username,
+            "id": user_exists.id,
+            "verified": user_exists.verified,
+            "email": user_exists.email,
+            "uploaded_activities": user_exists.uploaded_activities_id,
+            "organized_events": user_exists.organized_events_id
+        }
+    
         
