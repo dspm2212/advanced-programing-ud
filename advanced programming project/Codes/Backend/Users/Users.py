@@ -10,10 +10,16 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 """
 
 from pydantic import BaseModel
-from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy import Column, String, Integer, Boolean, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from db_conection import PostgresConnection
-from passlib.context import CryptContext
+
+
+# Create the tables in the database
+# Declarative base for SQLAlchemy
+Base = declarative_base()
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
+
 
 # ============================= USER CLASS =============================
 
@@ -23,17 +29,19 @@ class User(BaseModel):
     
     # Attributes declaration
     __username: str
-    __id: int
+    __id: str
     __password: str
     __email: str
     __registered_events: list = []
     __verified: bool = False
-    __uploaded_activities: list = []
-    __organized_events: list = []
+    __uploaded_activities_id: list = []
+    __participant_events_id: list = []
+    __organized_events_id: list = []
 
 
 
-    # Add user to the database
+ #--------------------------------------- METHODS --------------------------------------------------------
+
     def add_to_db(self):
         
         """
@@ -68,102 +76,90 @@ class User(BaseModel):
             password=self.__password,
             registered_events=",".join(self.__registered_events),
             verified=self.verified,
-            uploaded_activities=",".join(self.__uploaded_activities),
-            organized_events=",".join(self.__organized_events)
+            uploaded_activities_id=",".join(self.__uploaded_activities_id),
+            participant_events_id=",".join(self.__participant_events_id),
+            organized_events_id=",".join(self.__organized_events_id)
         )
 
         session.add(user_db)
         session.commit()
         session.close()
 
-    @classmethod
-    def hash_password(self, password:str) -> str:
-        
-        """ 
-        Main function:
-        
-        - Is used to hash the password of the user
-
-        Parameters:
-
-        - password (str) the password to be hashed
-
-        Returns:
-        - str: the hashed password of the user
-
-        """
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        return pwd_context.hash(password)
-
-    @classmethod
-    def verify_password(cls, plain_password: str, hashed_password: str) -> bool:
-        """ This method is used to verify the password of the user """
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        return pwd_context.verify(plain_password, hashed_password)
-
 #-------------------------- GETTERS AND SETTERS --------------------------------
 
-    """
+
     
-    # Getter and Setter for username
-    def get_username(self):
+# Properties for username
+    @property
+    def username(self) -> str:
         return self.__username
 
-    def set_username(self, username: str):
+    @username.setter
+    def username(self, username: str):
         self.__username = username
 
-    # Getter and Setter for id
-    def get_id(self):
+    # Properties for id
+    @property
+    def id(self) -> int:
         return self.__id
 
-    def set_id(self, user_id: int):
-        self.__id = user_id
+    @id.setter
+    def id(self, id: int):
+        self.__id = id
 
-    # Getter and Setter for password
-    def get_password(self):
+    # Properties for password
+    @property
+    def password(self) -> str:
         return self.__password
 
-    def set_password(self, password: str):
+    @password.setter
+    def password(self, password: str):
         self.__password = password
 
-    # Getter and Setter for email
-    def get_email(self):
+    # Properties for email
+    @property
+    def email(self) -> str:
         return self.__email
 
-    def set_email(self, email: str):
+    @email.setter
+    def email(self, email: str):
         self.__email = email
 
-    # Getter and Setter for registered_events
-    def get_registered_events(self):
+    # Properties for registered_events
+    @property
+    def registered_events(self) -> list:
         return self.__registered_events
 
-    def set_registered_events(self, registered_events: list):
+    @registered_events.setter
+    def registered_events(self, registered_events: list):
         self.__registered_events = registered_events
 
-    # Getter and Setter for verified
-    def get_verified(self):
+    # Properties for verified
+    @property
+    def verified(self) -> bool:
         return self.__verified
 
-    def set_verified(self, verified: bool):
+    @verified.setter
+    def verified(self, verified: bool):
         self.__verified = verified
 
-    # Getter and Setter for uploaded_activities
-    def get_uploaded_activities(self):
+    # Properties for uploaded_activities
+    @property
+    def uploaded_activities(self) -> list:
         return self.__uploaded_activities
 
-    def set_uploaded_activities(self, uploaded_activities: list):
+    @uploaded_activities.setter
+    def uploaded_activities(self, uploaded_activities: list):
         self.__uploaded_activities = uploaded_activities
 
-    # Getter and Setter for organized_events
-    def get_organized_events(self):
+    # Properties for organized_events
+    @property
+    def organized_events(self) -> list:
         return self.__organized_events
 
-    def set_organized_events(self, organized_events: list):
+    @organized_events.setter
+    def organized_events(self, organized_events: list):
         self.__organized_events = organized_events
-
-    """
-# Declarative base for SQLAlchemy
-Base = declarative_base()
 
 
 #=========================================== USERSDB CLASS ==================================================
@@ -176,16 +172,13 @@ class UsersDB(Base):
     """
 
     __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True, index=True)
+
+    id = Column(String, primary_key=True)
     username = Column(String, index=True)
     email = Column(String, index=True)
     password = Column(String)
-    registered_events = Column(String, nullable=True)
+    registered_events = Column(ARRAY(String), nullable=True)
     verified = Column(Boolean, default=False)
-    uploaded_activities = Column(String, nullable=True)
-    organized_events = Column(String, nullable=True)
-
-# Create the tables in the database
-connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
-Base.metadata.create_all(bind=connection.engine)
+    uploaded_activities_id = Column(ARRAY(String), nullable=True)
+    participant_events_id = Column(ARRAY(String), nullable=True)   
+    organized_events_id = Column(ARRAY(String), nullable=True)

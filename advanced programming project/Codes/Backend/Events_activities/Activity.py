@@ -14,65 +14,84 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 from Users import User
 from pydantic import BaseModel
 
-class Event(BaseModel): 
+
+# ============================= ACTIVITY CLASS =============================
+
+class Activity(BaseModel): 
     
-    """This class is an abstraction for any participant into the application"""
+    """This class is an abstraction for any activity into the application"""
 
     __name:str
+    __id:str
     __start_date:str
     __final_date:str
-    __organizer:User
-    __privated: bool
-    __participants:list = []
-    __activities:list = []
-    __material:list = []
+    __description:str
+    __at_time_list:list = []
 
+
+
+#-----------------------------  METHODS ----------------------------------------------
+
+
+#--------------------------
 
 def add_to_db(self):
+
+        """
+        Main function:
+
+        - Add a new Activity to the database.
+
+        Steps:
+
+        - Create a new session
+        - Create a new table with the actual attributes of the activity
+        - add it the table to the database
+        - upload the changes
+        - close the session
+
+        Parameters:
+
+        - None
+
+        Returns:
+
+        - None
+
+        """
         session = connection.session()
 
-        events_db = EventsDB(
+        activities_db = ActivitiesDB(
             name = self.__name,
             id=self.__id,
+            start_date=self.__start_date,
+            final_date=self.__final_date,
             description=self.__description,
-            organizer=self.__organizer,
-            privated=self.__privated,
-            participants=",".join(self.__participants),
-            activities=",".join(self.__activities),
-            material=",".join(self.__material)
-            
+            at_time_list=",".join(self.__at_time_list),
         )
 
-        session.add(events_db)
+        session.add(activities_db)
         session.commit()
         session.close()
 
-
+#----------------------------------------------------------------
 
 # Declarative base for SQLAlchemy
 Base = declarative_base()
 
-class EventsDB(Base):
+#============================================ ACTIVITIES DB CLASS ===================================
 
-
-
-    __tablename__ = "events"
+class ActivitiesDB(Base):
+    __tablename__ = "activities"
     
-    id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    id = Column(String, index=True)
+    start_date = Column(String, index=True)
+    final_date = Column(String, index=True)
     description = Column(String, index=True)
-    organizer = Column(String, index=True)
-    privated = Column(Boolean, default=False)
-    participants = Column(String, nullable=True)
-    activities = Column(String, nullable=True)
-    material = Column(String, nullable=True)
-
-# Create the tables in the database
-connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
-Base.metadata.create_all(bind=connection.engine)
+    at_time_list = Column(String, nullable=True)
 
 
 # Create the tables in the database
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 Base.metadata.create_all(bind=connection.engine)
-        
