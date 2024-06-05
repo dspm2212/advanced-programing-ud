@@ -16,8 +16,15 @@ from Users.Users import User, UsersDB, Base
 from Events_activities.Event import EventsDB
 from db_conection import PostgresConnection
 from Hash_password import hash_password, verify_password
-from DashBoard_services import router_dashboard
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, HTTPException
+from Users.Users import User, UsersDB
+from db_conection import PostgresConnection
+from Events_activities.Event import Event, EventsDB
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import func
+import Hash_password
+
 
 
 # ========================== DECLARATION =========================
@@ -36,13 +43,14 @@ app.add_middleware(
 
 #Starts the app
 app = FastAPI()
-app.include_router(router_dashboard)
 
 #Declare the actual online user
 user_online:User = None
 
 #Database connection
+
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
+session = connection.Session()
 
 # Create the tables in the database
 Base.metadata.create_all(bind=connection.engine, tables=[UsersDB.__table__])
@@ -62,7 +70,7 @@ def test():
 
     if not users_db:
         
-        session.close()
+
         return "No hay usuarios"
 
     elif user_online == None:
@@ -71,7 +79,7 @@ def test():
 
 
     else:
-        session.close()
+
         return "Hay usuarios " + str(len(users_db))+ " online user: " + user_online.username
 
 
@@ -91,13 +99,13 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
     steps:
 
-    - first create an session to de database
+
     - if the email hasn't an '@' will be raise an HTTPException (400)
     - if the password confirmation doesn't match with the password it will be raise an HTTPException (400)
     - if the username already exists it will be raise an HTTPException (400)
     - if the email already exists it will be raise an HTTPException (400)
     - if the username and the email doesn't exists the user is created and uploadoded to the database.
-    - finally, it closes the session
+
 
     Parameters:
     - username (str): The username of the new user.
@@ -116,15 +124,14 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
     ```
 
     """
-    session = connection.Session()
 
     if '@' not in email:
-        session.close()
+
         raise HTTPException(status_code=400, detail="The email address is not valid")
 
     elif password != password_confirmation:
 
-        session.close()
+
         raise HTTPException(status_code=400, detail="The passwords doesn't match")
 
     try: 
@@ -156,8 +163,6 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-    finally:
-            session.close()
 
     return {"message":"User Registered Succesfully" }
 
@@ -173,11 +178,11 @@ def login(username:str, password:str) -> dict:
 
     steps:
     
-    - first create an session to de database
+
     - if the username doesn't exists it will be raise an HTTPException (400)
     - if the password doesn't match with the password in the database it will be raise an HTTPException (400)
     - if the username and the password matchs the user is logged in and it values are copied in the user_online attribute
-    - finally, it closes the session
+
     
     Parameters:
     - username (str): The username of the new user.
@@ -200,7 +205,6 @@ def login(username:str, password:str) -> dict:
     """
     global user_online
 
-    session = connection.Session()
     user_db = session.query(UsersDB).all() 
 
 
@@ -219,16 +223,16 @@ def login(username:str, password:str) -> dict:
 
             user_exists.verified = True
             user_online = user_exists
+            session.commit()
 
     except Exception as e:
 
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-    finally:
-        session.close()
     return {"message":"Login successful"}
 
 
+#----------------------------------------------------------------
 
 @app.post("/search_user_by_id")
 def search_user_by_id(user_id:str):
@@ -236,10 +240,10 @@ def search_user_by_id(user_id:str):
     Main function:
     - Searches a user by id in the database.
     Steps:
-    - Create a new session
+
     - if the users id does not exist, will be raise an HTTPException (400)
     - if the users id exists, will be return the user
-    - finally, it closes the session
+
     Parameters:
     - user_id (int): The id of the user.
     Raises:
@@ -254,7 +258,7 @@ def search_user_by_id(user_id:str):
      ```
 
     """
-    session = connection.Session()
+
     user_db = session.query(UsersDB).all() 
     try:
         user_exists = session.query(UsersDB).filter(UsersDB.id == user_id).first()
@@ -262,8 +266,7 @@ def search_user_by_id(user_id:str):
             raise HTTPException(status_code=400, detail= "Invalid user id")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    finally:
-        session.close()
+
     return {
                 "username": user_exists.username,
             "id": user_exists.id,
@@ -273,5 +276,251 @@ def search_user_by_id(user_id:str):
             "participant_events": user_exists.participant_events_id,
             "organized_events": user_exists.organized_events_id
         }
+
+
+#=================================================== DASHBOARD SERVICES ===============================
+
+#======================================== DECLARATION =================================
+
+# Declarative base for SQLAlchemy
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
+
+#======================================== SERVICES ====================================
+@app.post("/dashboard/create_event")
+def create_event(event_name:str,  event_description:str, event_privated:bool):
+
+    """
+    Main function:
+
+    - create an event
+
+    Steps:
+
+
+    - update the tables with the actual attributes of the event
+    - add it the table to the database
+
+
+    Parameters:
+
+    - event_name (str): name of the event
+    - event_description (str): description of the event
+    - event_privated (bool): if the event is privated or not
+
+    Raises:
+
+    - HTTPException: if an error ocurred while creating the event.
+
+    Returns:
+
+    - str: message of the event creation
+
+
+    """
+
+
+    try:
+
+        new_id =  "E" + str(len(session.query(EventsDB).all()) + 1)
+        event = Event()
+        event.name = event_name
+        event.id = new_id 
+        event.description = event_description 
+        event.organizer_id = user_online.id
+        event.privated = event_privated
+
+        event.add_to_db()
+
+
+        organizer = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
+        organizer.organized_events_id = func.array_append(organizer.organized_events_id, event.id)
+        session.commit()
+        
+
+    
+    except Exception as e:
+    
+        raise HTTPException(status_code=500, detail= f"an error ocurred {str(e)}")
+
+    return {
+                "message": "event created successfully"
+    }
+
+
+# ----------------------------------------------------------------
+
+
+@app.post("/dashboard/create_event/add_password")
+def add_password_to_event(event_id:str, password:str, confirm_password:str):
+
+    """
+    Main function:
+
+    - add a password to an event
+
+    Steps:
+
+
+    - if the passwords don't coincide, will be raise an HTTPException (400) 
+    - if the passwords coincide, will be add the password to the event
+
+
+    Parameters:
+    - event_id (int): id of the event
+    - password (str):  password of the event
+    - confirm_password (str):  confirm password of the event
+
+    Raises:
+
+    - HTTPException: if the passwords don't coincide
+    - HTTPException: if the event id doesn't exist
+
+
+    """
+   
+
+    events_db = session.query(EventsDB).all()
+
+    event_exists = session.query(EventsDB).filter(UsersDB.id == event_id).first()
+
+    if not password == confirm_password:
+
+
+        raise HTTPException(status_code=400, detail="The passwords doesn't match")
+
+    else:
+
+        if event_exists:
+            hashed_password = hash_password(password)
+            event_exists.password = hashed_password
+            session.commit()
+
+
+    return {
+            "message": "password added successfully"
+    }
+  
+
+#----------------------------------------------------------------
+
+@app.post("/dashboard/join_event/public_event")
+def join_event_public(id:str):
+
+    """
+
+    Main function:
+
+    - 
+
+    """
+
+
+
+    events_db = session.query(EventsDB).all()
+    event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
+    try:
+        if not event_exists:
+
+            raise HTTPException(status_code=400, detail= "Invalid id, it does not exist")
+
+        else:
+            organizer = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
+            organizer.participant_events_id = func.array_append(organizer.participant_events_id, id)
+            session.commit()
+
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail= f"an error ocurred{str(e)}")
+
+
+    return {
+            "Message" : "Event joined succesfully"
+        }
+
+
+#----------------------------------------------------------------
+
+@app.post("/dashboard/join_event/private_event")
+def join_event_private(id:str, password:str):
+
+    """
+
+    Main function:
+
+    - 
+
+    """
+
+
+    
+    events_db = session.query(EventsDB).all()
+    event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
+    try:
+
+        
+        if not event_exists:
+
+
+            raise HTTPException(status_code=400, detail= "Invalid id, it does not exist")
+
+        elif not Hash_password.verify_password(password, event_exists.password):
+
+
+            raise HTTPException(status_code=400, detail= "Invalid password")
+
+        else:
+
+            organizer = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
+            organizer.participant_events_id = func.array_append(organizer.participant_events_id, id)
+            session.commit()
+
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail= f"an error ocurred{str(e)}")
+
+
+    return {
+            "Message" : "Event joined succesfully"
+        }
+
+#--------------------------------------------------------------------
+
+@app.post("/dashboard/search_event")
+def join_event(id:str):
+
+    """
+
+    Main function:
+
+    - 
+
+    """
+
+
+
+
+    events_db = session.query(EventsDB).all()
+    event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
+    try:
+        if not event_exists:
+
+
+            raise HTTPException(status_code=400, detail= "Invalid id, it does not exist")
+
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail= f"an error ocurred{str(e)}")
+
+
+    return {
+            "name": event_exists.name,
+            "id": event_exists.id,
+            "description": event_exists.description,
+            "organizer": event_exists.organizer_id,
+            "privated": event_exists.privated,
+            "participants": event_exists.participants_id,
+            "activities": event_exists.activities_id,
+        }
+
     
         

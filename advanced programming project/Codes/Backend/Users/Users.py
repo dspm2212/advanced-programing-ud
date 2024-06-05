@@ -176,7 +176,7 @@ class UsersDB(Base):
     id = Column(String, primary_key=True)
     username = Column(String, index=True)
     email = Column(String, index=True)
-    password = Column(String)
+    password = Column(String, index = True)
     registered_events = Column(ARRAY(String), nullable=True)
     verified = Column(Boolean, default=False)
     uploaded_activities_id = Column(ARRAY(String), nullable=True)
