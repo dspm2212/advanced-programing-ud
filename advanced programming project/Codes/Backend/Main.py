@@ -44,6 +44,8 @@ user_online:User = None
 #Database connection
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
+session = connection.Session()
+
 # Create the tables in the database
 Base.metadata.create_all(bind=connection.engine, tables=[UsersDB.__table__])
 Base.metadata.create_all(bind=connection.engine, tables=[EventsDB.__table__])
@@ -116,7 +118,6 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
     ```
 
     """
-    session = connection.Session()
 
     if '@' not in email:
         session.close()
@@ -156,8 +157,6 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-    finally:
-            session.close()
 
     return {"message":"User Registered Succesfully" }
 
@@ -200,7 +199,6 @@ def login(username:str, password:str) -> dict:
     """
     global user_online
 
-    session = connection.Session()
     user_db = session.query(UsersDB).all() 
 
 
@@ -219,16 +217,16 @@ def login(username:str, password:str) -> dict:
 
             user_exists.verified = True
             user_online = user_exists
+            session.commit()
 
     except Exception as e:
 
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-    finally:
-        session.close()
     return {"message":"Login successful"}
 
 
+#----------------------------------------------------------------
 
 @app.post("/search_user_by_id")
 def search_user_by_id(user_id:str):
@@ -254,7 +252,7 @@ def search_user_by_id(user_id:str):
      ```
 
     """
-    session = connection.Session()
+
     user_db = session.query(UsersDB).all() 
     try:
         user_exists = session.query(UsersDB).filter(UsersDB.id == user_id).first()
@@ -262,8 +260,7 @@ def search_user_by_id(user_id:str):
             raise HTTPException(status_code=400, detail= "Invalid user id")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    finally:
-        session.close()
+
     return {
                 "username": user_exists.username,
             "id": user_exists.id,

@@ -27,7 +27,9 @@ import Main
 router_dashboard = APIRouter()
 
 # Declarative base for SQLAlchemy
-Base = declarative_base()
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
+
+session = connection.Session()
 
 
 #Database Connection
@@ -66,25 +68,23 @@ def create_event(event_name:str,  event_description:str, event_privated:bool):
 
     """
 
-    session = connection.Session()
-
-    events_db = session.query(EventsDB).all()
-    users_db = session.query(UsersDB).all()
-    user_online = Main.user_online
 
     try:
 
         new_id =  "E" + str(len(session.query(EventsDB).all()) + 1)
-        event = EventsDB()
+        event = Event()
         event.name = event_name
         event.id = new_id 
         event.description = event_description 
-        event.organizer_id = user_online.id
+        event.organizer_id = Main.user_online.id
         event.privated = event_privated
-        session.add(event)
+
+        event.add_to_db()
 
 
-        organizer = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
+        organizer = session.query(UsersDB).filter(UsersDB.id == Main.user_online.id).first()
+        session.add(organizer)
+        session.merge(organizer)
 
         organizer.organized_events_id = func.array_append(organizer.organized_events_id, event.id)
         
@@ -93,10 +93,6 @@ def create_event(event_name:str,  event_description:str, event_privated:bool):
     except Exception as e:
     
         raise HTTPException(status_code=500, detail= f"an error ocurred {str(e)}")
-
-    finally:
-
-        session.close()
 
     return {
                 "message": "event created successfully"
@@ -107,7 +103,7 @@ def create_event(event_name:str,  event_description:str, event_privated:bool):
 
 
 @router_dashboard.post("/dashboard/create_event/add_password")
-def add_password_to_event(event_id:int, password:str, confirm_password:str):
+def add_password_to_event(event_id:str, password:str, confirm_password:str):
 
     """
     Main function:
@@ -134,7 +130,6 @@ def add_password_to_event(event_id:int, password:str, confirm_password:str):
 
     """
 
-    session = connection.Session()
     events_db = session.query(EventsDB).all()
 
     event_exists = session.query(EventsDB).filter(UsersDB.id == event_id).first()
@@ -149,8 +144,11 @@ def add_password_to_event(event_id:int, password:str, confirm_password:str):
         if event_exists:
             hashed_password = hash_password(password)
             event_exists.password = hashed_password
+            session.commit()
 
-    session.close()
+    return {
+            "message": "password added successfully"
+    }
   
 
 #----------------------------------------------------------------
@@ -165,8 +163,6 @@ def join_event_public(id:str):
     - 
 
     """
-
-    session = connection.Session()
 
     events_db = session.query(EventsDB).all()
     event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
@@ -183,9 +179,6 @@ def join_event_public(id:str):
     except Exception as e:
         raise HTTPException(status_code=400, detail= f"an error ocurred{str(e)}")
 
-    finally:
-        
-        session.close()
 
     return {
             "Message" : "Event joined succesfully"
@@ -204,9 +197,7 @@ def join_event_private(id:str, password:str):
     - 
 
     """
-
-    session = connection.Session()
-
+    
     events_db = session.query(EventsDB).all()
     event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
     try:
@@ -223,16 +214,13 @@ def join_event_private(id:str, password:str):
             raise HTTPException(status_code=400, detail= "Invalid password")
 
         else:
-            
+
             organizer = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
             organizer.participant_events_id = func.array_append(organizer.participant_events_id, id)
 
     except Exception as e:
         raise HTTPException(status_code=400, detail= f"an error ocurred{str(e)}")
 
-    finally:
-        
-        session.close()
 
     return {
             "Message" : "Event joined succesfully"
@@ -251,7 +239,6 @@ def join_event(id:str):
 
     """
 
-    session = connection.Session()
 
     events_db = session.query(EventsDB).all()
     event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
