@@ -1,4 +1,4 @@
-This is a b examppppple of a frontend using Django and HTML - CSS - JS Team
+In this file can you search the fronted of the application Virtual Xperience 
 
 ## Website Navigate MAp
 
