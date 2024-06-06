@@ -1,0 +1,4 @@
+django
+sqlalchemy
+pydantic
+pydantic-settings
