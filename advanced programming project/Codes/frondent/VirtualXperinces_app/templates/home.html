@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+    <head>
+        <title> Virtual Xperience </title>
+        <meta charset="UTF-8">
+        <meta name= "author" content="Sergio Mendivelso y Daniel Perez">
+        <meta name = "keywords" content = "">
+        <meta name="viewport " content="width= device-width, initial-scale=1.0 "> 
+        <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    </head>
+
+    <body>
+        <div class="container">
+            <header class="header">
+                <div class="logo">
+                    <h1>Virtual Xperiences</h1>
+                </div>
+                <nav class="nav">
+                    <a href="login.html">Events</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                    <a href="login.html">Sign In</a>
+                    <a href="register.html">Sign Up</a>
+                </nav>
+            </header>
+            <main>
+                <section class="intro">
+                    <div class="content">
+                        <h2>Welcome to Virtual Xperiences</h2>
+                        <p>Virtual Xperiences is a platform that allows you to attend online events, interact with other participants, and access recorded content. Enjoy a unique and exciting virtual event experience.</p>
+                    </div>
+                </section>
+                <section class="events">
+                    <div class="content">
+                        <h2>Upcoming Featured Events</h2>
+                        <div class="cards">
+                            <div class="card">
+                                <img src="placeholder.svg" alt="Event 1">
+                                <div class="card-content">
+                                    <h3>Technology Conference</h3>
+                                    <p>June 15, 2023</p>
+                                    <button class="btn">Attend</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <img src="placeholder.svg" alt="Event 2">
+                                <div class="card-content">
+                                    <h3>Graphic Design Workshop</h3>
+                                    <p>July 20, 2023</p>
+                                    <button class="btn">Attend</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <img src="placeholder.svg" alt="Event 3">
+                                <div class="card-content">
+                                    <h3>Entrepreneurship Webinar</h3>
+                                    <p>August 1, 2023</p>
+                                    <button class="btn">Attend</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="testimonials">
+                    <div class="content">
+                        <h2>What Our Users Say</h2>
+                        <div class="cards">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="user">
+                                        <img src="placeholder.svg" alt="User 1" class="avatar">
+                                        <div>
+                                            <h4>John Doe</h4>
+                                            <p>Participant</p>
+                                        </div>
+                                    </div>
+                                    <p>"Virtual Xperiences has been an incredible experience! I was able to attend online events easily and enjoyably. I definitely recommend it!"</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="user">
+                                        <img src="placeholder.svg" alt="User 2" class="avatar">
+                                        <div>
+                                            <h4>Jane Arden</h4>
+                                            <p>Event Organizer</p>
+                                        </div>
+                                    </div>
+                                    <p>"As an event organizer, Virtual Xperiences has been an invaluable tool. My online events have been very successful thanks to this platform!"</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="user">
+                                        <img src="placeholder.svg" alt="User 3" class="avatar">
+                                        <div>
+                                            <h4>Sarah Miller</h4>
+                                            <p>Participant</p>
+                                        </div>
+                                    </div>
+                                    <p>"I love the ease of use of Virtual Xperiences! I've been able to connect with other participants and enjoy online events in a very satisfying way."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <footer class="footer">
+                <div class="content">
+                    <p>&copy; 2023 Virtual Xperiences. All rights reserved.</p>
+                    <nav class="nav">
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Privacy Policy</a>
+                    </nav>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
