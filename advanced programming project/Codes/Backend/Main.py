@@ -176,7 +176,7 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 #--------------------------------------
 
 @app.post("/login")
-def login(username:str, password:str) -> dict:
+def login(email:str, password:str) -> dict:
     """
     
     main function:
@@ -186,29 +186,30 @@ def login(username:str, password:str) -> dict:
     steps:
     
 
-    - if the username doesn't exists it will be raise an HTTPException (400)
+    - if the email doesn't exists it will be raise an HTTPException (400)
     - if the password doesn't match with the password in the database it will be raise an HTTPException (400)
-    - if the username and the password matchs the user is logged in and it values are copied in the user_online attribute
+    - if the email and the password matchs the user is logged in and it values are copied in the user_online attribute
 
     
     Parameters:
 
-    - username (str): The username of the new user.
-    - password (str): The password of the new user.
+    - email (str): The email of the user.
+    - password (str): The password of the user.
 
     
     Raises:
-    - HTTPException: If the username doesn't exists, or if the password doesn't match.
+
+    - HTTPException: If the email doesn't exists, or if the password doesn't match.
     
     Returns:
 
-    - str: "Invalid username or password" if the user doesn't exist or if the password is incorrect. 
+    - str: "Invalid email or password" if the user doesn't exist or if the password is incorrect. 
     - dict: "User Logged In Succesfully" if the user is logged in successfully.
 
     Example:
 
      ```
-     login("username", "password123")
+     login("email@email.com", "password123")
 
       ```
 
@@ -221,14 +222,15 @@ def login(username:str, password:str) -> dict:
 
     try:
 
-        user_exists = session.query(UsersDB).filter(UsersDB.username == username).first()
+        user_exists = session.query(UsersDB).filter(UsersDB.email == email).first()
 
         if not user_exists:
 
-            raise HTTPException(status_code=400, detail= "Invalid username or password")
+            raise HTTPException(status_code=400, detail= "Invalid email or password")
 
         elif not verify_password(password, user_exists.password):
-            raise HTTPException(status_code=400, detail="Invalid username or password")
+
+            raise HTTPException(status_code=400, detail="Invalid email or password")
 
         else: 
 
@@ -304,6 +306,27 @@ def search_user_by_id(user_id:str):
 
 @app.get("/show_users")
 def show_users():
+
+    """
+
+    Main function:
+
+    - Shows all the users in the database.
+
+    Steps:
+
+    - get all the users in the database.
+    - return all the users in the database.
+
+    Parameters:
+
+    - None
+
+    Returns:
+
+    - list: all the dictionary of the users info in the database (Except password).
+
+    """
 
     users = session.query(UsersDB).all()
 
@@ -722,6 +745,26 @@ def search_event_by_id(id:str):
 @app.get("/show_public_events")
 
 def show_public_events():
+
+    """
+    Main function:
+
+    - Shows all the public events in the database.
+
+    Steps:
+
+    - get all the public events in the database.
+    - return all the public events in the database.
+
+    Parameters:
+
+    - None
+
+    Returns:
+
+    - list: all the dictionary of the users info in the database (Except password).
+
+    """
 
     public_events = session.query(EventsDB).filter(EventsDB.privated == False).all()
 
