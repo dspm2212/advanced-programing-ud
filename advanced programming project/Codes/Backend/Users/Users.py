@@ -1,4 +1,3 @@
-
 """
 This module contains the classes and methods to manage the users of the application.
 
@@ -8,71 +7,178 @@ Sergio Nicolás Mendivelso  <snmendivelsom@udistrital.edu.co>
 
 Daniel Santiago Pérez <dsperezm@udistrital.edu.co> 
 
-
 """
 
 from pydantic import BaseModel
-from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy import Column, String, Integer, Boolean, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
+from db_conection import PostgresConnection
 
 
-# ============================= PARCICIPANT CLASS =============================
+# Create the tables in the database
+# Declarative base for SQLAlchemy
+Base = declarative_base()
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
-class Participant(BaseModel):
 
-    """This class is an abstractation for any participant into the application"""   
-    _username: str
-    _id: int
-    _password: str
-    _email: str
-    _registered_events: list
-    _verified: bool
-    _uploaded_activities: list
+# ============================= USER CLASS =============================
 
-    @staticmethod
-    def register(username, email, password):
-  
-        """ This method is used to register a new Participant
+class User(BaseModel):
 
-        Args:
-        username: str the name of the participant
-        email: str the email of the participant
-        password: str the password of the participant
+    """This class is an abstraction for any User into the application"""
+    
+    # Attributes declaration
+    __username: str
+    __id: str
+    __password: str
+    __email: str
+    __registered_events: list = []
+    __verified: bool = False
+    __uploaded_activities_id: list = []
+    __participant_events_id: list = []
+    __organized_events_id: list = []
+
+
+
+ #--------------------------------------- METHODS --------------------------------------------------------
+
+    def add_to_db(self):
+        
+        """
+        Main function:
+
+        - Add a new user to the database.
+
+        Steps:
+
+        - Create a new session
+        - Create a new table with the actual attributes of the user
+        - add it the table to the database
+        - upload the changes
+        - close the session
+
+        Parameters:
+
+        - None
 
         Returns:
-        Participant: Participant 
+
+        - None
 
         """
+        
+        session = connection.session()
 
-        return Participant(username = username, email = email, password = password)
-  
+        user_db = UsersDB(
+            username=self.__username,
+            id=self.__id,
+            email=self.__email,
+            password=self.__password,
+            registered_events=",".join(self.__registered_events),
+            verified=self.verified,
+            uploaded_activities_id=",".join(self.__uploaded_activities_id),
+            participant_events_id=",".join(self.__participant_events_id),
+            organized_events_id=",".join(self.__organized_events_id)
+        )
 
-    @staticmethod
-    def login(username, password):
-        """
-        This method is used to login into the application.
+        session.add(user_db)
+        session.commit()
+        session.close()
 
-       
-        """ 
-        return Participant(username = username, password = password, verified ={"publish": True})
+#-------------------------- GETTERS AND SETTERS --------------------------------
+
+
     
-class Organizer(Participant):
+# Properties for username
+    @property
+    def username(self) -> str:
+        return self.__username
 
-    """This class is an abstractation for any organizer in the application"""
+    @username.setter
+    def username(self, username: str):
+        self.__username = username
 
-    _organized_events:list
+    # Properties for id
+    @property
+    def id(self) -> int:
+        return self.__id
+
+    @id.setter
+    def id(self, id: int):
+        self.__id = id
+
+    # Properties for password
+    @property
+    def password(self) -> str:
+        return self.__password
+
+    @password.setter
+    def password(self, password: str):
+        self.__password = password
+
+    # Properties for email
+    @property
+    def email(self) -> str:
+        return self.__email
+
+    @email.setter
+    def email(self, email: str):
+        self.__email = email
+
+    # Properties for registered_events
+    @property
+    def registered_events(self) -> list:
+        return self.__registered_events
+
+    @registered_events.setter
+    def registered_events(self, registered_events: list):
+        self.__registered_events = registered_events
+
+    # Properties for verified
+    @property
+    def verified(self) -> bool:
+        return self.__verified
+
+    @verified.setter
+    def verified(self, verified: bool):
+        self.__verified = verified
+
+    # Properties for uploaded_activities
+    @property
+    def uploaded_activities(self) -> list:
+        return self.__uploaded_activities
+
+    @uploaded_activities.setter
+    def uploaded_activities(self, uploaded_activities: list):
+        self.__uploaded_activities = uploaded_activities
+
+    # Properties for organized_events
+    @property
+    def organized_events(self) -> list:
+        return self.__organized_events
+
+    @organized_events.setter
+    def organized_events(self, organized_events: list):
+        self.__organized_events = organized_events
 
 
-Base = declarative_base()
+#=========================================== USERSDB CLASS ==================================================
 
 class UsersDB(Base):
 
+    """
+    This class provides the users database
+
+    """
+
     __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True)
-    username = Column(String)
-    email = Column(String)
-    password = Column(String)
-    registered_events = Column(String)
-    verified = Column(String)
-    uploaded_activities = Column(String)
+
+    id = Column(String, primary_key=True)
+    username = Column(String, index=True)
+    email = Column(String, index=True)
+    password = Column(String, index = True)
+    registered_events = Column(ARRAY(String), nullable=True)
+    verified = Column(Boolean, default=False)
+    uploaded_activities_id = Column(ARRAY(String), nullable=True)
+    participant_events_id = Column(ARRAY(String), nullable=True)   
+    organized_events_id = Column(ARRAY(String), nullable=True)
