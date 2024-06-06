@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+{% load static %}
+   
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/styles_register.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="card">
+                <div class="header">
+                    <h1>Register</h1>
+                    <p>Create your Virtual Xperiences account.</p>
+                </div>
+                <div class="form-container">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input id="name" type="text" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input id="email" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input id="password" type="password" placeholder="Enter a password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the Terms and Conditions</label>
+                            <p class="small-text">By creating an account, you agree to our Terms of Service and Privacy Policy.</p>
+                        </div>
+                        <button type="submit" class="submit-button">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
