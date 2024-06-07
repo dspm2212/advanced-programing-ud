@@ -11,8 +11,24 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 
 #------------------------------------------------------------
 
-from Users import User
 from pydantic import BaseModel
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, ARRAY
+from sqlalchemy.ext.declarative import declarative_base
+from db_conection import PostgresConnection
+
+
+#========================================= DECLARATION =================================
+
+# Declarative base for SQLAlchemy
+Base = declarative_base()
+
+# Create the tables in the database
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
+
+
+
+
+
 
 
 # ============================= ACTIVITY CLASS =============================
@@ -23,9 +39,10 @@ class Activity(BaseModel):
 
     __name:str
     __id:str
+    __description:str
+    __event_id:str
     __start_date:str
     __final_date:str
-    __description:str
     __at_time_list:list = []
 
 
@@ -33,9 +50,7 @@ class Activity(BaseModel):
 #-----------------------------  METHODS ----------------------------------------------
 
 
-#--------------------------
-
-def add_to_db(self):
+    def add_to_db(self):
 
         """
         Main function:
@@ -64,9 +79,10 @@ def add_to_db(self):
         activities_db = ActivitiesDB(
             name = self.__name,
             id=self.__id,
+            description=self.__description,
+            event_id = self.__event_id,
             start_date=self.__start_date,
             final_date=self.__final_date,
-            description=self.__description,
             at_time_list=",".join(self.__at_time_list),
         )
 
@@ -74,24 +90,76 @@ def add_to_db(self):
         session.commit()
         session.close()
 
-#----------------------------------------------------------------
+#-------------------------- GETTERS AND SETTERS --------------------------------
 
-# Declarative base for SQLAlchemy
-Base = declarative_base()
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @property
+    def id(self) -> str:
+        return self.__id
+
+    @property
+    def event_id(self) -> str:
+        return self.__event_id
+
+    @property
+    def start_date(self) -> str:
+        return self.__start_date
+
+    @property
+    def final_date(self) -> str:
+        return self.__final_date
+
+    @property
+    def description(self) -> str:
+        return self.__description
+
+    @property
+    def at_time_list(self) -> list:
+        return self.__at_time_list
+
+#-------------------------------------------------------------
+
+    @name.setter
+    def name(self, value: str):
+        self.__name = value
+
+    @id.setter
+    def id(self, value: str):
+        self.__id = value
+
+    @id.setter
+    def event_id(self, value: str):
+        self.__event_id = value
+
+    @start_date.setter
+    def start_date(self, value: str):
+        self.__start_date = value
+
+    @final_date.setter
+    def final_date(self, value: str):
+        self.__final_date = value
+
+    @description.setter
+    def description(self, value: str):
+        self.__description = value
+
+    @at_time_list.setter
+    def at_time_list(self, value: list):
+        self.__at_time_list = value
 
 #============================================ ACTIVITIES DB CLASS ===================================
 
 class ActivitiesDB(Base):
+
     __tablename__ = "activities"
     
     name = Column(String, index=True)
-    id = Column(String, index=True)
+    id = Column(String, primary_key=True)
+    description = Column(String, index=True)
+    event_id = Column(String, index=True)
     start_date = Column(String, index=True)
     final_date = Column(String, index=True)
-    description = Column(String, index=True)
-    at_time_list = Column(String, nullable=True)
-
-
-# Create the tables in the database
-connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
-Base.metadata.create_all(bind=connection.engine)
+    at_time_list = Column(ARRAY(String), nullable=True)
