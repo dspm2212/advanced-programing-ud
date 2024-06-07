@@ -11,10 +11,8 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 
 #------------------------------------------------------------
 
-from Users.Users import User
 from pydantic import BaseModel
 from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, ARRAY
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from db_conection import PostgresConnection
 
@@ -92,69 +90,72 @@ class Event(BaseModel):
     def name(self) -> str:
         return self.__name
 
-    @name.setter
-    def name(self, name: str):
-        self.__name = name
-
     @property
     def id(self) -> str:
         return self.__id
-
-    @id.setter
-    def id(self, event_id: str):
-        self.__id = event_id
 
     @property
     def description(self) -> str:
         return self.__description
 
-    @description.setter
-    def description(self, description: str):
-        self.__description = description
-
     @property
     def organizer_id(self) -> int:
         return self.__organizer_id
-
-    @organizer_id.setter
-    def organizer_id(self, organizer_id: int):
-        self.__organizer_id = organizer_id
 
     @property
     def privated(self) -> bool:
         return self.__privated
 
-    @privated.setter
-    def privated(self, privated: bool):
-        self.__privated = privated
-
     @property
     def password(self) -> str:
         return self.__password
-
-    @password.setter
-    def password(self, password: str):
-        self.__password = password
 
     @property
     def participants(self) -> list:
         return self.__participants
 
-    @participants.setter
-    def participants(self, participants: list):
-        self.__participants = participants
-
     @property
     def activities(self) -> list:
         return self.__activities
 
-    @activities.setter
-    def activities(self, activities: list):
-        self.__activities = activities
-
     @property
     def material(self) -> list:
         return self.__material
+
+#------------------------------------------------------
+
+    @name.setter
+    def name(self, name: str):
+        self.__name = name
+
+
+    @id.setter
+    def id(self, event_id: str):
+        self.__id = event_id
+
+    @description.setter
+    def description(self, description: str):
+        self.__description = description
+
+    @organizer_id.setter
+    def organizer_id(self, organizer_id: int):
+        self.__organizer_id = organizer_id
+
+    @privated.setter
+    def privated(self, privated: bool):
+        self.__privated = privated
+
+    @password.setter
+    def password(self, password: str):
+        self.__password = password
+
+    @participants.setter
+    def participants(self, participants: list):
+        self.__participants = participants
+
+    @activities.setter
+    def activities(self, activities: list):
+        self.__activities = activities
 
     @material.setter
     def material(self, material: list):

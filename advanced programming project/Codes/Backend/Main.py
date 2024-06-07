@@ -11,19 +11,16 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 
 #----------------------------------------------------------------
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from Users.Users import User, UsersDB, Base
-from Events_activities.Event import EventsDB
+from Events_activities.Event import Event, EventsDB
+from Events_activities.Activity import Activity, ActivitiesDB
 from db_conection import PostgresConnection
 from Hash_password import hash_password, verify_password
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import APIRouter, HTTPException
-from Users.Users import User, UsersDB
-from db_conection import PostgresConnection
-from Events_activities.Event import Event, EventsDB
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import func
-import Hash_password
+from datetime import datetime
+
 
 
 # ========================== DECLARATION =========================
@@ -54,6 +51,7 @@ session = connection.Session()
 # Create the tables in the database
 Base.metadata.create_all(bind=connection.engine, tables=[UsersDB.__table__])
 Base.metadata.create_all(bind=connection.engine, tables=[EventsDB.__table__])
+Base.metadata.create_all(bind=connection.engine, tables=[ActivitiesDB.__table__])
 
 #==================================== SERVICES =================================
 
@@ -566,6 +564,8 @@ def join_event(id:str):
             participant = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
             participant.participant_events_id = func.array_append(participant.participant_events_id, id)
 
+            event_exists.participants_id = func.array_append(participants_id, organizer.id)
+
             session.commit()
 
 
@@ -662,6 +662,8 @@ def join_event(id:str, password:str):
 
             organizer.participant_events_id = func.array_append(organizer.participant_events_id, id)
 
+            event_exists.participants_id = func.array_append(participants_id, organizer.id)
+
             session.commit()
 
 
@@ -719,6 +721,7 @@ def search_event_by_id(id:str):
 
     events_db = session.query(EventsDB).all()
     event_exists = session.query(EventsDB).filter(EventsDB.id == id).first()
+
     try:
         if not event_exists:
 
@@ -762,7 +765,7 @@ def show_public_events():
 
     Returns:
 
-    - list: all the dictionary of the users info in the database (Except password).
+    - list: all the dictionary of the public events info in the database (Except password).
 
     """
 
@@ -811,4 +814,137 @@ def show_private_events():
     }
 
     
+#================================================== ACTIVITIES SERVICES ===========================
+
+from datetime import datetime, timedelta
+
+@app.post("/events/create_activity")
+def create_activity(name: str, description: str, event_id: str, end_day: int, end_month: int, end_year: int):
+    """
+    Main function:
+
+    - Create a new activity in the database.
+
+    Steps:
+
+    - create a new activity and add it to the database.
+    - return a message indicating success of the creation.
+
+    Parameters:
+
+    - name (str): name of the activity
+    - description (str): description of the activity
+    - event_id (str): id of the event
+    - end_day (int): final day to the delivery of the activity
+    - end_month (int): final month to the delivery of the activity
+    - end_year (int): final year to the delivery of the activity
+
+    Returns:
+
+    - dict: Message of the activity creation succesfully
+
+    Example:
+
+       ```
+
+    create_activity("activity name", "This is an activity", 06, 12, 2025)
+
+     ```
+
+    """
+
+    session = connection.Session()
+
+    try:
+
+        # Define the hour diffierence bettern the time zone
+        gmt_minus_5_offset = timedelta(hours=-5)
+
+        # obtain the actual hour in UTC and adjust it to GMT-5
+        start_date_gmt_minus_5 = datetime.utcnow() + gmt_minus_5_offset
+
+        # Define the final date of the activity
+        final_date = datetime(end_year, end_month, end_day, 23, 59, 59)
+
+        # Crete the new activity
+        new_id = "A" + str(len(session.query(ActivitiesDB).all()) + 1)
+        activity = Activity()
+        activity.id = new_id
+        activity.name = name
+        activity.description = description
+        activity.event_id = event_id
+        activity.start_date = start_date_gmt_minus_5.strftime('%Y-%m-%d %H:%M:%S')
+        activity.final_date = final_date.strftime('%Y-%m-%d %H:%M:%S')
+
+        # Update the event with the new activity
+
+        event = session.query(EventsDB).filter(EventsDB.id == event_id).first()
+        event.activities_id = func.array_append(event.activities_id, new_id)
+
+        # add the activity to the database
+
+        activity.add_to_db()
+
+        session.commit()
+
+        return {
+
+            "Message": "Activity created successfully"
+        }
+    except Exception as e:
+
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+    finally:
+        session.close()
+
+#----------------------------------------------------------------
+
+@app.get ("/show_activities")
+def show_activities():
+
+    """
+    Main function:
+
+    - Shows all the activities in the database.
+
+    Steps:
+
+    - get all the activities in the database.
+    - return all the activites in the database.
+
+    Parameters:
+
+    - None
+
+    Returns:
+
+    - list: all the dictionary of the activities info in the database.
+
+    """
+
+    activities = session.query(ActivitiesDB).all()
+
+    return {
+        "Activities": [
+            {
+
+            "name ":activity.name,
+            "id ":activity.id,
+            "description ":activity.description,
+            "event_id ":activity.event_id,
+            "start_date":activity.start_date,
+            "final_date":activity.final_date,
+            "at time list ":activity.at_time_list
+
+
+            }
+            for activity in activities
+        ]
+    }
+
+
+
+
+
         
