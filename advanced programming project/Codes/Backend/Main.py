@@ -20,6 +20,7 @@ from Hash_password import hash_password, verify_password
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 from datetime import datetime,timezone, timedelta
+import json
 
 
 
@@ -955,6 +956,7 @@ def show_activities():
             "name ":activity.name,
             "id ":activity.id,
             "description ":activity.description,
+            "deliveries": activity.deliveries,
             "event_id ":activity.event_id,
             "start_date":activity.start_date,
             "final_date":activity.final_date,
@@ -1013,6 +1015,7 @@ def show_activities_actual_user():
                             "name": activity.name,
                             "id": activity.id,
                             "description": activity.description,
+                            "deliveries": activity.deliveries,
                             "event_id": activity.event_id,
                             "start_date": activity.start_date,
                             "final_date": activity.final_date,
@@ -1060,12 +1063,14 @@ def show_activities_event(event_id: str):
 
     return [
             {
-                "id": activity.id,
-                "name": activity.name,
-                "event id": activity.event_id,
-                "description": activity.description,
-                "start_date": activity.start_date,
-                "final_date": activity.final_date
+            "name": activity.name,
+            "id": activity.id,
+            "description": activity.description,
+            "deliveries": activity.deliveries,
+            "event_id": activity.event_id,
+            "start_date": activity.start_date,
+            "final_date": activity.final_date,
+            "at_time_list": activity.at_time_list
             }
             for activity in activities
         ]
@@ -1074,8 +1079,8 @@ def show_activities_event(event_id: str):
 #----------------------------------------------------------------
 
 
-@app.post ("/dashboard/{event_id}/{activity_id}/upload_activity")
-def upload_activity( event_id:str , activity_id:str, file_name:str):
+@app.post ("/dashboard/{activity_id}/upload_activity")
+def upload_activity(activity_id:str, file_name:str):
 
 
     """
@@ -1087,7 +1092,7 @@ def upload_activity( event_id:str , activity_id:str, file_name:str):
 
     - Get the activity from the database.
     - Upload the file to the activity.
-    - Mark the file as send.
+    - Mark the file as sent.
 
     Parameters:
 
@@ -1103,47 +1108,45 @@ def upload_activity( event_id:str , activity_id:str, file_name:str):
 
     ```
 
-    upload_activity("E30", "A30", "file.txt")
+    upload_activity("A30", "file.txt")
 
     ```
     """
 
-    activity = session.query(ActivitiesDB).filter(ActivitiesDB.activity_id == activity_id).first()
+    activity = session.query(ActivitiesDB).filter(ActivitiesDB.id == activity_id).first()
 
-    user = session.query(UserDB).filter(UserDB.id == user_id).first()
+    user = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
 
     new_delivery = {
         
         "file_name": file_name,
-        "sent": True,
         "user": user_online.username,
         "id": user_online.id
 
     }
 
-    activity.deliveries = func.array_append(activity.deliveries, new_delivery)
+    activity.deliveries = func.array_append(activity.deliveries, json.dumps(new_delivery))
 
-    user.uploaded_activities = func.array_append(user.uploaded_activities, activity.id)
+    user.uploaded_activities_id = func.array_append(user.uploaded_activities_id, activity.id)
 
     current_time = datetime.now(timezone(timedelta(hours=-5)))
 
-    for activity in activities:
 
-        final_date = datetime.strptime(activity.final_date, "%Y-%m-%d %H:%M:%S")
+    final_date = datetime.strptime(activity.final_date, "%Y-%m-%d %H:%M:%S")
 
-        final_date = final_date.replace(tzinfo=timezone(timedelta(hours=-5)))
+    final_date = final_date.replace(tzinfo=timezone(timedelta(hours=-5)))
 
-        if final_date < current_time:
+    if  current_time < final_date :
 
-            if current_user_id not in activity.at_time_list:
-                
-                activity.at_time_list.append(current_user_id)
+        activity.at_time_list = func.array_append(activity.at_time_list, user.id)
 
-                session.commit()
-                return {"message": "Activity uploaded succesfully, it was uploaded at time"}
+        session.commit()
 
-            else:
+        return {"message": "Activity uploaded succesfully, it was uploaded at time"}
 
-                session.commit()
-                return {"message": "Activity uploaded succesfully, delivery out of time"}
+    else:
+
+        session.commit()
+        
+        return {"message": "Activity uploaded succesfully, delivery out of time"}
 
