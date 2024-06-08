@@ -25,12 +25,6 @@ Base = declarative_base()
 # Create the tables in the database
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
-
-
-
-
-
-
 # ============================= ACTIVITY CLASS =============================
 
 class Activity(BaseModel): 
