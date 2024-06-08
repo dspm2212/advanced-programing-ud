@@ -43,6 +43,7 @@ class Activity(BaseModel):
     __event_id:str
     __start_date:str
     __final_date:str
+    __deliveries:list = []
     __at_time_list:list = []
 
 
@@ -83,6 +84,7 @@ class Activity(BaseModel):
             event_id = self.__event_id,
             start_date=self.__start_date,
             final_date=self.__final_date,
+            deliveries=self.__deliveries,
             at_time_list=",".join(self.__at_time_list),
         )
 
@@ -117,6 +119,10 @@ class Activity(BaseModel):
         return self.__description
 
     @property
+    def deliveries(self) -> list:
+        return self.__deliveries
+
+    @property
     def at_time_list(self) -> list:
         return self.__at_time_list
 
@@ -146,6 +152,10 @@ class Activity(BaseModel):
     def description(self, value: str):
         self.__description = value
 
+    @deliveries.setter
+    def deliveries(self, value: list):
+        self.__deliveries = value
+
     @at_time_list.setter
     def at_time_list(self, value: list):
         self.__at_time_list = value
@@ -162,4 +172,5 @@ class ActivitiesDB(Base):
     event_id = Column(String, index=True)
     start_date = Column(String, index=True)
     final_date = Column(String, index=True)
+    deliveries = Column(ARRAY(String), nullable=True)
     at_time_list = Column(ARRAY(String), nullable=True)

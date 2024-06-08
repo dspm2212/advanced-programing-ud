@@ -19,7 +19,7 @@ from db_conection import PostgresConnection
 from Hash_password import hash_password, verify_password
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
-from datetime import datetime
+from datetime import datetime,timezone, timedelta
 
 
 
@@ -83,7 +83,7 @@ def test():
 #------------------------------------
 
 
-@app.post("/register")
+@app.post("/home/register")
 def register(username:str, email:str, password:str, password_confirmation:str) -> dict:
 
 
@@ -172,7 +172,7 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
 #--------------------------------------
 
-@app.post("/login")
+@app.post("/home/login")
 def login(email:str, password:str) -> dict:
     """
     
@@ -245,7 +245,7 @@ def login(email:str, password:str) -> dict:
 
 #----------------------------------------------------------------
 
-@app.post("/search_user_by_id")
+@app.post("/dev_tool/search_user_by_id")
 def search_user_by_id(user_id:str):
     """
     Main function:
@@ -301,7 +301,7 @@ def search_user_by_id(user_id:str):
 
 #----------------------------------------------------------------
 
-@app.get("/show_users")
+@app.get("/dev_tool/show_users")
 def show_users():
 
     """
@@ -345,7 +345,7 @@ def show_users():
 
 #======================================== EVENT SERVICES ====================================
 
-@app.post("/dashboard/create_event/public")
+@app.post("/dashboard/{online_user.id}/create_event/public")
 def create_event(event_name:str,  event_description:str):
 
     """
@@ -414,7 +414,7 @@ def create_event(event_name:str,  event_description:str):
 
 # ----------------------------------------------------------------
 
-@app.post("/dashboard/create_event/privated")
+@app.post("/dashboard/{online_user.id}/create_event/privated")
 def create_event(event_name:str,  event_description:str, password: str, password_confirmation:str):
 
     """
@@ -494,7 +494,7 @@ def create_event(event_name:str,  event_description:str, password: str, password
 
 #----------------------------------------------------------------
 
-@app.post("/dashboard/join_event/public_event")
+@app.post("/dashboard/{online_user.id}/join_event/public_event")
 def join_event(id:str):
 
     """
@@ -584,7 +584,7 @@ def join_event(id:str):
 
 #----------------------------------------------------------------
 
-@app.post("/dashboard/join_event/private_event")
+@app.post("/dashboard/{online_user.id}/join_event/private_event")
 def join_event(id:str, password:str):
 
     """
@@ -680,7 +680,7 @@ def join_event(id:str, password:str):
 
 #--------------------------------------------------------------------
 
-@app.post("/dashboard/search_event_by_id")
+@app.post("/dev_tool/search_event_by_id")
 def search_event_by_id(id:str):
 
     """
@@ -747,8 +747,7 @@ def search_event_by_id(id:str):
 
 #--------------------------------------------------------------------
 
-@app.get("/show_public_events")
-
+@app.get("/dashboard/{online_user.id}/show_public_events")
 def show_public_events():
 
     """
@@ -791,10 +790,10 @@ def show_public_events():
         ]
     }
 
-@app.get("/show_private_events")
 
 #--------------------------------------------------------------------
 
+@app.get("/dashboard/{online_user.id}/show_private_events")
 def show_private_events():
 
     """
@@ -842,7 +841,7 @@ def show_private_events():
 
 from datetime import datetime, timedelta
 
-@app.post("/events/create_activity")
+@app.post("/dashboard/{online_user.id}/{event_id}/create_activity")
 def create_activity(name: str, description: str, event_id: str, end_day: int, end_month: int, end_year: int):
     """
     Main function:
@@ -924,7 +923,7 @@ def create_activity(name: str, description: str, event_id: str, end_day: int, en
 
 #----------------------------------------------------------------
 
-@app.get ("/show_activities")
+@app.get ("/dev_tool/show_activities")
 def show_activities():
 
     """
@@ -967,10 +966,10 @@ def show_activities():
         ]
     }
 
-@app.get("/show_activities/user_online")
+@app.get("/dashboard/{online_user.id}/show_activities")
 def show_activities_actual_user():
 
-        """
+    """
     Main function:
 
     - shows the activities of the currently online user.
@@ -991,7 +990,7 @@ def show_activities_actual_user():
 
     """
     
-    #try:
+    try:
 
 
         # Obtaint the user online
@@ -1003,7 +1002,9 @@ def show_activities_actual_user():
         activities_info = []
 
         for event_id in user_online.participant_events_id:
+
             event = session.query(EventsDB).filter(EventsDB.id == event_id).first()
+
             if event:
                 for activity_id in event.activities_id:
                     activity = session.query(ActivitiesDB).filter(ActivitiesDB.id == activity_id).first()
@@ -1018,9 +1019,131 @@ def show_activities_actual_user():
                             "at_time_list": activity.at_time_list
                         })
 
+                    if activity.id in user_online.uploaded_activities:
+                        activities_info.remove(len(activities_info)-1)
+
         return {"Activities": activities_info}
-   # except Exception as e:
-        #raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 
+#----------------------------------------------------------------
+
+@app.get("/dashboard/{online_user.id}/{event_id}/show_activities")
+def show_activities_event(event_id: str):
+
+    """
+    Main function:
+
+    - Shows all the activities of a specific event.
+
+    Steps:
+
+    - get all the activities of a specific event.
+    - return all the activities of a specific event.
+
+    Parameters:
+
+    - event_id (str): id of the event
+
+    Returns:
+
+    - list: all the dictionary of the activities info in the database.
+
+    """
+    event = session.query(EventsDB).filter(EventsDB.id == event_id).first()
+
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    activities = session.query(ActivitiesDB).filter(ActivitiesDB.event_id == event_id).all()
+
+    return [
+            {
+                "id": activity.id,
+                "name": activity.name,
+                "event id": activity.event_id,
+                "description": activity.description,
+                "start_date": activity.start_date,
+                "final_date": activity.final_date
+            }
+            for activity in activities
+        ]
+
+
+#----------------------------------------------------------------
+
+
+@app.post ("/dashboard/{event_id}/{activity_id}/upload_activity")
+def upload_activity( event_id:str , activity_id:str, file_name:str):
+
+
+    """
+    Main function:
+
+    - Upload a file to the activity and mark it as send.
+
+    Steps:
+
+    - Get the activity from the database.
+    - Upload the file to the activity.
+    - Mark the file as send.
+
+    Parameters:
+
+    - event_id (str): id of the event
+    - activity_id (str): id of the activity
+    - file_name (str): name of the file
+
+    Returns:
+
+    - dict: Message of the activity upload succesfully
+
+    Example:
+
+    ```
+
+    upload_activity("E30", "A30", "file.txt")
+
+    ```
+    """
+
+    activity = session.query(ActivitiesDB).filter(ActivitiesDB.activity_id == activity_id).first()
+
+    user = session.query(UserDB).filter(UserDB.id == user_id).first()
+
+    new_delivery = {
         
+        "file_name": file_name,
+        "sent": True,
+        "user": user_online.username,
+        "id": user_online.id
+
+    }
+
+    activity.deliveries = func.array_append(activity.deliveries, new_delivery)
+
+    user.uploaded_activities = func.array_append(user.uploaded_activities, activity.id)
+
+    current_time = datetime.now(timezone(timedelta(hours=-5)))
+
+    for activity in activities:
+
+        final_date = datetime.strptime(activity.final_date, "%Y-%m-%d %H:%M:%S")
+
+        final_date = final_date.replace(tzinfo=timezone(timedelta(hours=-5)))
+
+        if final_date < current_time:
+
+            if current_user_id not in activity.at_time_list:
+                
+                activity.at_time_list.append(current_user_id)
+
+                session.commit()
+                return {"message": "Activity uploaded succesfully, it was uploaded at time"}
+
+            else:
+
+                session.commit()
+                return {"message": "Activity uploaded succesfully, delivery out of time"}
+
