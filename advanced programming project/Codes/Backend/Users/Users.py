@@ -15,11 +15,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from db_conection import PostgresConnection
 
 
-# Create the tables in the database
+#========================================= DECLARATION =================================
+
 # Declarative base for SQLAlchemy
 Base = declarative_base()
-connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
+# Create the tables in the database
+connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
 # ============================= USER CLASS =============================
 
@@ -88,74 +90,69 @@ class User(BaseModel):
 #-------------------------- GETTERS AND SETTERS --------------------------------
 
 
-    
-# Properties for username
     @property
     def username(self) -> str:
         return self.__username
+
+
+    @property
+    def id(self) -> int:
+        return self.__id
+
+    @property
+    def password(self) -> str:
+        return self.__password
+
+    @property
+    def email(self) -> str:
+        return self.__email
+
+    @property
+    def registered_events(self) -> list:
+        return self.__registered_events
+
+    @property
+    def verified(self) -> bool:
+        return self.__verified
+
+    @property
+    def uploaded_activities(self) -> list:
+        return self.__uploaded_activities
+
+    @property
+    def organized_events(self) -> list:
+        return self.__organized_events
+
+#----------------------------------------------------------------
 
     @username.setter
     def username(self, username: str):
         self.__username = username
 
-    # Properties for id
-    @property
-    def id(self) -> int:
-        return self.__id
-
     @id.setter
     def id(self, id: int):
         self.__id = id
-
-    # Properties for password
-    @property
-    def password(self) -> str:
-        return self.__password
 
     @password.setter
     def password(self, password: str):
         self.__password = password
 
-    # Properties for email
-    @property
-    def email(self) -> str:
-        return self.__email
-
     @email.setter
     def email(self, email: str):
         self.__email = email
-
-    # Properties for registered_events
-    @property
-    def registered_events(self) -> list:
-        return self.__registered_events
 
     @registered_events.setter
     def registered_events(self, registered_events: list):
         self.__registered_events = registered_events
 
-    # Properties for verified
-    @property
-    def verified(self) -> bool:
-        return self.__verified
-
     @verified.setter
     def verified(self, verified: bool):
         self.__verified = verified
 
-    # Properties for uploaded_activities
-    @property
-    def uploaded_activities(self) -> list:
-        return self.__uploaded_activities
 
     @uploaded_activities.setter
     def uploaded_activities(self, uploaded_activities: list):
         self.__uploaded_activities = uploaded_activities
-
-    # Properties for organized_events
-    @property
-    def organized_events(self) -> list:
-        return self.__organized_events
 
     @organized_events.setter
     def organized_events(self, organized_events: list):

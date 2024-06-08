@@ -16,10 +16,13 @@ from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from db_conection import PostgresConnection
 
-#===================================== DECLARATION ====================================
 
-# Declarative base class
+#========================================= DECLARATION =================================
+
+# Declarative base for SQLAlchemy
 Base = declarative_base()
+
+# Create the tables in the database
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
 #================================== EVENT CLASS =====================================
@@ -37,7 +40,7 @@ class Event(BaseModel):
     __password:str = None
     __participants_id:list = []
     __activities_id:list = []
-    __material:list = []
+    __comments:list = []
 
 #-------------------------- METHODS ----------------------------------------
 
@@ -76,7 +79,7 @@ class Event(BaseModel):
                 password=self.__password,
                 participants_id=",".join(self.__participants_id),
                 activities_id=",".join(self.__activities_id),
-                material=",".join(self.__material)
+                comments=",".join(self.__comments)
 
             )
 
@@ -119,8 +122,8 @@ class Event(BaseModel):
         return self.__activities
 
     @property
-    def material(self) -> list:
-        return self.__material
+    def comments(self) -> list:
+        return self.__comments
 
 #------------------------------------------------------
 
@@ -157,9 +160,9 @@ class Event(BaseModel):
     def activities(self, activities: list):
         self.__activities = activities
 
-    @material.setter
-    def material(self, material: list):
-        self.__material = material
+    @comments.setter
+    def comments(self, material: list):
+        self.__comments = comments
 
 #======================================== EVENTS DB CLASS ============================================
 
@@ -179,5 +182,5 @@ class EventsDB(Base):
     password = Column(String, nullable=True)
     participants_id = Column(ARRAY(String), nullable=True)
     activities_id = Column(ARRAY(String), nullable=True)
-    material = Column(String, nullable=True)
+    comments = Column(ARRAY(String), nullable=True)
 
