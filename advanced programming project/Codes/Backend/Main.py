@@ -136,7 +136,6 @@ def register(username:str, email:str, password:str, password_confirmation:str) -
 
     elif password != password_confirmation:
 
-
         raise HTTPException(status_code=400, detail="The passwords doesn't match")
 
     try: 
@@ -378,7 +377,7 @@ def create_event(event_name:str,  event_description:str):
     Example:
     
     ```
-    create_event ("E30", "Description")
+    create_event ("Name", "Description")
      ```
 
     """
@@ -534,7 +533,7 @@ def join_event(id:str):
 
     ```
     
-    join_event("U30")
+    join_event("E30")
 
 
      ```
@@ -548,6 +547,10 @@ def join_event(id:str):
 
             raise HTTPException(status_code=400, detail= "Invalid id, it does not exist")
 
+        elif event_exists.privated == True:
+
+            raise HTTPException(status_code=400, detail= "Invalid id, it is not a public event")
+        
         elif id in user_online.organized_events_id:
 
             raise HTTPException(status_code=400, detail= "Invalid, the user is the organizer of the event")
@@ -556,15 +559,14 @@ def join_event(id:str):
 
             raise HTTPException(status_code=400, detail= "Invalid, the user is already a participant of the event")
 
-        elif event_exists.privated == True:
 
-            raise HTTPException(status_code=400, detail= "Invalid id, it is not a public event")
 
         else:
+
             participant = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
             participant.participant_events_id = func.array_append(participant.participant_events_id, id)
 
-            event_exists.participants_id = func.array_append(participants_id, organizer.id)
+            event_exists.participants_id = func.array_append(event_exists.participants_id, participant.id)
 
             session.commit()
 
@@ -624,7 +626,7 @@ def join_event(id:str, password:str):
 
     ```
 
-    join_event("U30", "correct_password")
+    join_event("E30", "correct_password")
 
      ```
 
@@ -643,13 +645,13 @@ def join_event(id:str, password:str):
 
             raise HTTPException(status_code=400, detail= "Invalid, the user is the organizer of the event")
 
-        elif id in user_online.participant_events_id:
-
-            raise HTTPException(status_code=400, detail= "Invalid, the user is already a participant of the event")
-
         elif event_exists.privated == False:
 
             raise HTTPException(status_code=400, detail= "Invalid id, it is not an private event")
+
+        elif id in user_online.participant_events_id:
+
+            raise HTTPException(status_code=400, detail= "Invalid, the user is already a participant of the event")
 
         elif not verify_password(password, event_exists.password):
 
@@ -658,11 +660,11 @@ def join_event(id:str, password:str):
 
         else:
 
-            organizer = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
+            participant = session.query(UsersDB).filter(UsersDB.id == user_online.id).first()
 
-            organizer.participant_events_id = func.array_append(organizer.participant_events_id, id)
+            participant.participant_events_id = func.array_append(participant.participant_events_id, id)
 
-            event_exists.participants_id = func.array_append(participants_id, organizer.id)
+            event_exists.participants_id = func.array_append(event_exists.participants_id, participant.id)
 
             session.commit()
 
@@ -710,7 +712,7 @@ def search_event_by_id(id:str):
     
     ```
 
-    search_event_by_id("U30")
+    search_event_by_id("E30")
 
      ```
 
@@ -765,7 +767,7 @@ def show_public_events():
 
     Returns:
 
-    - list: all the dictionary of the public events info in the database (Except password).
+    - list: all the dictionary of the public events info in the database.
 
     """
 
@@ -791,7 +793,29 @@ def show_public_events():
 
 @app.get("/show_private_events")
 
+#--------------------------------------------------------------------
+
 def show_private_events():
+
+    """
+    Main function:
+
+    - Shows all the private events in the database.
+
+    Steps:
+
+    - get all the private events in the database.
+    - return all the private events in the database.
+
+    Parameters:
+
+    - None
+
+    Returns:
+
+    - list: all the dictionary of the private events info in the database (Except password).
+
+    """
 
     private_events = session.query(EventsDB).filter(EventsDB.privated == True).all()
 
@@ -943,8 +967,60 @@ def show_activities():
         ]
     }
 
+@app.get("/show_activities/user_online")
+def show_activities_actual_user():
+
+        """
+    Main function:
+
+    - shows the activities of the currently online user.
+
+    Steps:
+
+    - Get the list of activity IDs for the user online.
+    - recognize each activity from the database.
+    - Return the details of each activity of the user.
+
+    Parameters:
+
+    - user_id (str): The user's id.
+
+    Returns:
+
+    - dict: A dictionary containing the activities info for the user online.
+
+    """
+    
+    #try:
 
 
+        # Obtaint the user online
+        global user_online
+
+        if not user_online:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        activities_info = []
+
+        for event_id in user_online.participant_events_id:
+            event = session.query(EventsDB).filter(EventsDB.id == event_id).first()
+            if event:
+                for activity_id in event.activities_id:
+                    activity = session.query(ActivitiesDB).filter(ActivitiesDB.id == activity_id).first()
+                    if activity:
+                        activities_info.append({
+                            "name": activity.name,
+                            "id": activity.id,
+                            "description": activity.description,
+                            "event_id": activity.event_id,
+                            "start_date": activity.start_date,
+                            "final_date": activity.final_date,
+                            "at_time_list": activity.at_time_list
+                        })
+
+        return {"Activities": activities_info}
+   # except Exception as e:
+        #raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 
         
