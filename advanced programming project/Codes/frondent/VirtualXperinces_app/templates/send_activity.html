@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Submission</title>
+    <link rel="stylesheet" href="{% static 'css/styles_send_activity.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Activity Submission</h1>
+            <p>Please select the file you would like to submit and click the "Submit" button.</p>
+            <form id="uploadForm">
+                <label for="file">File</label>
+                <input type="file" id="file" name="file" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

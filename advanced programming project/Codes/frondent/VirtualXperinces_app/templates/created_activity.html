@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Activity</title>
+    <link rel="stylesheet" href="{% static 'css/styles_created_activity.css' %}">
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1>Create New Activity</h1>
+            <p>Fill out the form to add a new activity.</p>
+        </div>
+        <div class="card-content">
+            <form id="activityForm">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" placeholder="Enter activity title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Enter activity description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" id="deadline" name="deadline" required>
+                </div>
+                <div class="card-footer">
+                    <button type="submit">Save Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

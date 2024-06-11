@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Virtual Xperience</title>
+    <link rel="stylesheet" href="{% static 'css/styles_Nwevent.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create a Virtual Xperience</h1>
+            <p>Choose if your event will be public or private.</p>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>Event Details</h2>
+            </div>
+            <div class="card-content">
+                <form id="event-form">
+                    <div class="form-group">
+                        <label for="event-name">Event Name</label>
+                        <input type="text" id="event-name" placeholder="Enter event name">
+                    </div>
+                    <div class="form-group">
+                        <label for="event-description">Event Description</label>
+                        <textarea id="event-description" placeholder="Enter event description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-type">Event Type</label>
+                        <select id="event-type" onchange="handleEventTypeChange()">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="password-group" style="display: none;">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter password">
+                        <p>This password will be required for guests to access the event.</p>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Create Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="scriptss.js"></script>
+</body>
+</html>
