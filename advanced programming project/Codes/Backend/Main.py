@@ -350,7 +350,7 @@ def create_event(event_name: str, event_description: str, password: str, passwor
     - Verifies that the password and password confirmation match, otherwise raises an HTTPException (400).
     - Generates a new event id.
     - Creates a new event with the provided name, description, and hashed password.
-    - Sets the organizer ID to the currently logged-in user.
+    - Sets the organizer id to the currently logged-in user.
     - Adds the event to the database.
     - Updates the organizer's list of organized events.
     - Commits the changes to the database.
@@ -808,11 +808,11 @@ def create_activity(name: str, description: str, event_id: str, end_day: int, en
 
 #----------------------------------------------------------------
 
-@app.get("/calendar/{online_user.id}/show_activities")
-def show_activities_actual_user() -> dict:
+@app.get("dashboard/calendar/{online_user.id}/show_activities")
+def show_pending_activities_actual_user() -> dict:
 
     """
-    Main function: Shows the activities of the currently online user.
+    Main function: Shows the pending activities of the currently online user.
 
     Steps:
 
@@ -880,7 +880,9 @@ def show_activities_actual_user() -> dict:
 
                     # Remove uploaded activities from the list
                     if activity.id in user_online.uploaded_activities:
+
                         activities_info.remove(len(activities_info)-1)
+
 
         return {"Activities": activities_info}
     except Exception as e:
@@ -944,7 +946,9 @@ def show_activities_event(event_id: str) -> dict:
                 "start_date": activity.start_date,
                 "final_date": activity.final_date,
                 "at_time_list": activity.at_time_list
+
             }
+            
             for activity in activities
         ]
     }
