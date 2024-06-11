@@ -1,0 +1,69 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #666;
+}
+
+.details h2, .comments h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.details ul, .comments .comment {
+    margin-bottom: 20px;
+}
+
+.details .bold {
+    font-weight: bold;
+    color: #000;
+}
+
+.details ul ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.comments .comment {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.comments .comment img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.comments .comment h3 {
+    font-size: 1em;
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.comments .comment p {
+    color: #666;
+    margin: 0;
+}

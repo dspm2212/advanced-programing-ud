@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link rel="stylesheet" href="{% static 'css/styles_post.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Post</h1>
+        <form id="postForm">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+
+            <label for="image">Image</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
