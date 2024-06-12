@@ -69,10 +69,8 @@ Join us on this journey as we navigate the evolving landscape of remote work and
 ---
 
 ### Class diagram
+![diagrmas de actividad-Página-18 drawio](https://github.com/dspm2212/advanced-programing-ud/assets/151407920/32c72af7-61f8-46a2-b29b-c2f64694d7de)
 
----
-
-![alt text](<diagrmas de actividad-Página-18.drawio.png>)
 
 this diagram explain the interactions between classes
 
