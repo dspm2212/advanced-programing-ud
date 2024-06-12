@@ -1,5 +1,7 @@
 
 // login API 
+
+base_url = "http://localhost:8000"
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
     const email = document.getElementById('email').value;
@@ -13,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     console.log('Form Data Submitted: ', requestData);
 
     // API request
-    fetch('https://api/login', {
+    fetch(base_url + '/home/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

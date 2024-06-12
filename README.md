@@ -15,7 +15,7 @@
 
 ## Project Overview:
 
-Dear teacher, eelcome to the Virtual Xperience project! This project was developed as part of the Advanced Programming course at Universidad Distrital Francisco José de Caldas. The goal of this project was to design and implement a virtual event platform using modern web technologies.
+Dear teacher, welcome to the Virtual Xperience project! This project was developed as part of the Advanced Programming course at Universidad Distrital Francisco José de Caldas. The goal of this project was to design and implement a virtual event platform using modern web technologies.
 
 ### Objectives:
 - Learn how to implement web services using FASTAPI python library.
