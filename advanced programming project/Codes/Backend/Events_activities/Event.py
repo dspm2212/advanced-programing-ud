@@ -11,17 +11,18 @@ Daniel Santiago Pérez <dsperezm@udistrital.edu.co>
 
 #------------------------------------------------------------
 
-from Users.Users import User
 from pydantic import BaseModel
 from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, ARRAY
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from db_conection import PostgresConnection
 
-#===================================== DECLARATION ====================================
 
-# Declarative base class
+#========================================= DECLARATION =================================
+
+# Declarative base for SQLAlchemy
 Base = declarative_base()
+
+# Create the tables in the database
 connection = PostgresConnection("Daniel", "perez123", "Virtual_Xperience", 5432, "Virtual_Xperience")
 
 #================================== EVENT CLASS =====================================
@@ -39,7 +40,7 @@ class Event(BaseModel):
     __password:str = None
     __participants_id:list = []
     __activities_id:list = []
-    __material:list = []
+    __comments:list = []
 
 #-------------------------- METHODS ----------------------------------------
 
@@ -78,7 +79,7 @@ class Event(BaseModel):
                 password=self.__password,
                 participants_id=",".join(self.__participants_id),
                 activities_id=",".join(self.__activities_id),
-                material=",".join(self.__material)
+                comments=",".join(self.__comments)
 
             )
 
@@ -92,73 +93,76 @@ class Event(BaseModel):
     def name(self) -> str:
         return self.__name
 
-    @name.setter
-    def name(self, name: str):
-        self.__name = name
-
     @property
     def id(self) -> str:
         return self.__id
-
-    @id.setter
-    def id(self, event_id: str):
-        self.__id = event_id
 
     @property
     def description(self) -> str:
         return self.__description
 
-    @description.setter
-    def description(self, description: str):
-        self.__description = description
-
     @property
     def organizer_id(self) -> int:
         return self.__organizer_id
-
-    @organizer_id.setter
-    def organizer_id(self, organizer_id: int):
-        self.__organizer_id = organizer_id
 
     @property
     def privated(self) -> bool:
         return self.__privated
 
-    @privated.setter
-    def privated(self, privated: bool):
-        self.__privated = privated
-
     @property
     def password(self) -> str:
         return self.__password
-
-    @password.setter
-    def password(self, password: str):
-        self.__password = password
 
     @property
     def participants(self) -> list:
         return self.__participants
 
-    @participants.setter
-    def participants(self, participants: list):
-        self.__participants = participants
-
     @property
     def activities(self) -> list:
         return self.__activities
+
+    @property
+    def comments(self) -> list:
+        return self.__comments
+
+#------------------------------------------------------
+
+    @name.setter
+    def name(self, name: str):
+        self.__name = name
+
+
+    @id.setter
+    def id(self, event_id: str):
+        self.__id = event_id
+
+    @description.setter
+    def description(self, description: str):
+        self.__description = description
+
+    @organizer_id.setter
+    def organizer_id(self, organizer_id: int):
+        self.__organizer_id = organizer_id
+
+    @privated.setter
+    def privated(self, privated: bool):
+        self.__privated = privated
+
+    @password.setter
+    def password(self, password: str):
+        self.__password = password
+
+    @participants.setter
+    def participants(self, participants: list):
+        self.__participants = participants
 
     @activities.setter
     def activities(self, activities: list):
         self.__activities = activities
 
-    @property
-    def material(self) -> list:
-        return self.__material
-
-    @material.setter
-    def material(self, material: list):
-        self.__material = material
+    @comments.setter
+    def comments(self, material: list):
+        self.__comments = comments
 
 #======================================== EVENTS DB CLASS ============================================
 
@@ -178,5 +182,5 @@ class EventsDB(Base):
     password = Column(String, nullable=True)
     participants_id = Column(ARRAY(String), nullable=True)
     activities_id = Column(ARRAY(String), nullable=True)
-    material = Column(String, nullable=True)
+    comments = Column(ARRAY(String), nullable=True)
 
